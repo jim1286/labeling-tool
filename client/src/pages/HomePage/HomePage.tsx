@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Container,
-  Explanation,
-  LabelingMode,
-  ModeText,
-  Title,
-} from "./styles";
+import { Container, LabelingMode } from "./styles";
 import { FlexColumn, FlexRow } from "@/components";
 import { useTheme } from "styled-components";
 import { H1 } from "@/theme";

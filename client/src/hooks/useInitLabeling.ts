@@ -22,7 +22,8 @@ import { DecodeUtil, EncodeUtil, ImageUtil, LabelingUtil } from "@/utils";
 import { useEffect, useState } from "react";
 import useSleep from "./useSleep";
 import useSetNewTaskLayer from "./useSetNewTaskLayer";
-// import { useEngineDB } from '@engine-app/engine-db';
+import { useGetNpyBufferQuery } from "@/queries";
+import useSam from "./useSam";
 
 const useInitLabeling = () => {
   const setSamMode = useBoundStore((state) => state.setSamMode);
@@ -38,9 +39,16 @@ const useInitLabeling = () => {
   const labelingMode = useBoundStore((state) => state.labelingMode);
   const defectTypeList = useBoundStore((state) => state.defectTypeList);
   const defaultDefectType = useBoundStore((state) => state.defaultDefectType);
-  // const { engineDBApi } = useEngineDB();
-
   const [isLoading, setIsLoading] = useState(false);
+  const { isLoading: npyBufferIsLoading, data: npyBufferData } =
+    useGetNpyBufferQuery(labelingMode, currentImage.path);
+  const { initNpy } = useSam();
+
+  useEffect(() => {
+    if (labelingMode === LabelingModeEnum.SEGMENTATION && npyBufferData) {
+      initNpy(npyBufferData.npyBuffer.data);
+    }
+  }, [npyBufferData, labelingMode]);
 
   useEffect(() => {
     if (!currentImage.path) {
@@ -70,10 +78,6 @@ const useInitLabeling = () => {
 
     if (defaultDefectType && !labelData) {
       await initDrawMode(defaultDefectType, currentImage.path);
-    }
-
-    if (labelingMode === LabelingModeEnum.SEGMENTATION) {
-      await initSam(currentImage.path);
     }
 
     if (labelData) {
@@ -123,19 +127,6 @@ const useInitLabeling = () => {
         break;
       }
     }
-  };
-
-  const initSam = async (imagePath: string) => {
-    // try {
-    //   const npyPath = await engineDBApi?.getNpy(imagePath);
-    //   if (!npyPath) {
-    //     engineDBApi?.unInitSam();
-    //     return;
-    //   }
-    //   await engineDBApi?.initSam(npyPath);
-    // } catch (error) {
-    //   console.log(error);
-    // }
   };
 
   const initData = (labelData: LabelData) => {
@@ -294,7 +285,7 @@ const useInitLabeling = () => {
   };
 
   return {
-    isLoading,
+    isLoading: isLoading || npyBufferIsLoading,
     initLabeling,
     getClsDefectType,
     getOdTaskLayer,

@@ -3,16 +3,30 @@ import { Outlet } from "react-router-dom";
 import { AppContainer } from "./styles";
 import { StyleSheetManager, ThemeProvider } from "styled-components";
 import isValidProp from "@emotion/is-prop-valid";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 0,
+      staleTime: 1000 * 60 * 10,
+    },
+  },
+});
 
 const App = () => {
   return (
-    <StyleSheetManager shouldForwardProp={isValidProp}>
-      <ThemeProvider theme={CustomTheme.dark}>
-        <AppContainer>
-          <Outlet />
-        </AppContainer>
-      </ThemeProvider>
-    </StyleSheetManager>
+    <QueryClientProvider client={queryClient}>
+      <StyleSheetManager shouldForwardProp={isValidProp}>
+        <ThemeProvider theme={CustomTheme.dark}>
+          <AppContainer>
+            {import.meta.env.DEV && <ReactQueryDevtools />}
+            <Outlet />
+          </AppContainer>
+        </ThemeProvider>
+      </StyleSheetManager>
+    </QueryClientProvider>
   );
 };
 

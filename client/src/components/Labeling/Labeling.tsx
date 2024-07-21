@@ -1,18 +1,33 @@
-import React, { useEffect } from 'react';
-import { LabelingModeEnum } from '@/enums';
-import { ClsLabeling, KeyPointLabeling, OdLabeling, SegLabeling } from './components';
-import { useBoundStore } from '@/store';
-import { Spin } from 'antd';
-import useCreateNpy from './hook';
-import { BM } from '@/theme';
-import { FlexColumn } from '../BaseStyle';
-import { useCurrentImageIsSamLoading } from '@/hooks';
+import React, { useEffect } from "react";
+import { LabelingModeEnum } from "@/enums";
+import {
+  ClsLabeling,
+  KeyPointLabeling,
+  OdLabeling,
+  SegLabeling,
+} from "./components";
+import { useBoundStore } from "@/store";
+import { Spin } from "antd";
+import useCreateNpy from "./hook";
+import { BM } from "@/theme";
+import { FlexColumn } from "../BaseStyle";
+import { useCurrentImageIsSamLoading, useSam } from "@/hooks";
+import { useGetOnnxBufferQuery } from "@/queries";
 
 const Labeling: React.FC = () => {
   const ableNpyRequest = useBoundStore((state) => state.ableNpyRequest);
   const npyRequests = useBoundStore((state) => state.npyRequests);
   const labelingMode = useBoundStore((state) => state.labelingMode);
+  const { isLoading: onnxBufferIsLoading, data: onnxBufferData } =
+    useGetOnnxBufferQuery(labelingMode);
   const { contextHolder, createNpy } = useCreateNpy();
+  const { initOnnx, initNpy } = useSam();
+
+  useEffect(() => {
+    if (labelingMode === LabelingModeEnum.SEGMENTATION && onnxBufferData) {
+      initOnnx(onnxBufferData);
+    }
+  }, [onnxBufferData, labelingMode]);
 
   useEffect(() => {
     if (labelingMode === LabelingModeEnum.SEGMENTATION && ableNpyRequest) {
