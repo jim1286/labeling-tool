@@ -1,3 +1,2 @@
-export * from './labeling.enum';
-export * from './mode.enum';
-export * from './train.enum';
+export * from "./labeling.enum";
+export * from "./mode.enum";

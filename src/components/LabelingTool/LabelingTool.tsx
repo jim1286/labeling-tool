@@ -1,24 +1,13 @@
 import React, { useState } from "react";
 import { Collection, LabelShortCuts, LabelingBody } from "./components";
-import { useLocation, useNavigate } from "react-router-dom";
 import { Body, CollectionWrap, Container, LabelingWrap, Menu } from "./styles";
-import { IconHome } from "@tabler/icons-react";
+import { IconArrowRight } from "@tabler/icons-react";
 import { useTheme } from "styled-components";
 import { FlexRow } from "../BaseStyle";
 
 export const LabelingTool: React.FC = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
   const theme = useTheme();
   const [collapsed, setCollapsed] = useState(true);
-
-  const handleNavigatePage = () => {
-    if (!location.state) {
-      return;
-    }
-
-    navigate("/");
-  };
 
   const handleCollapsed = (currentCollapsed: boolean) => {
     setCollapsed(currentCollapsed);
@@ -30,15 +19,14 @@ export const LabelingTool: React.FC = () => {
         collapsed={collapsed}
         onMouseEnter={() => handleCollapsed(false)}
         onMouseLeave={() => handleCollapsed(true)}
-        onClick={handleNavigatePage}
       >
         {collapsed ? (
           <FlexRow
             width="100%"
             justifyContent="center"
-            style={{ marginTop: "15px", cursor: "pointer" }}
+            style={{ marginTop: "16px" }}
           >
-            <IconHome color={theme.icon.primary} />
+            <IconArrowRight color={theme.icon.primary} size={20} />
           </FlexRow>
         ) : (
           <LabelShortCuts />

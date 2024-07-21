@@ -1,5 +1,6 @@
 import App from "@/App";
-import { LabelingTool } from "@/components";
+import { ProtectRouter } from "@/components";
+import { HomePage, LabelingToolPage } from "@/pages";
 import { createBrowserRouter } from "react-router-dom";
 
 export const router = createBrowserRouter([
@@ -8,8 +9,18 @@ export const router = createBrowserRouter([
     element: <App />,
     children: [
       {
+        path: "/home",
+        element: <HomePage />,
+      },
+      {
         path: "/",
-        element: <LabelingTool />,
+        element: <ProtectRouter />,
+        children: [
+          {
+            path: "/labeling",
+            element: <LabelingToolPage />,
+          },
+        ],
       },
     ],
   },

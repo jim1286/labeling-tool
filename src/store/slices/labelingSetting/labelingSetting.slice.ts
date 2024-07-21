@@ -10,10 +10,7 @@ import { customPresetColors, defectTypeColors } from "@/theme/color";
 import { SessionStorageUtil } from "@/utils";
 
 const initialState: LabelingSettingState = {
-  labelingMode: SessionStorageUtil.load(
-    "taskCategory",
-    LabelingModeEnum.SEGMENTATION
-  ),
+  labelingMode: LabelingModeEnum.NONE,
   lineWidth: 5,
   brushSize: 50,
   defaultDefectType: null,

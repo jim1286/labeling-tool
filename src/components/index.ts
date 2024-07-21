@@ -8,3 +8,4 @@ export * from "./ErrorMessage";
 export * from "./ValidateSpaceInput";
 export * from "./SvgIcon";
 export * from "./CustomModal";
+export * from "./ProtectRouter";

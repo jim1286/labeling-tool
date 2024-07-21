@@ -72,18 +72,23 @@ interface BrushProps {
   brushColor: string;
 }
 
-export const BrushCursor = styled.div<BrushProps>`
-  left: ${({ point, size }) => `${point.x - size / 2}px`};
-  top: ${({ point, size }) => `${point.y - size / 2}px`};
-  width: ${({ size }) => `${size}px`};
-  height: ${({ size }) => `${size}px`};
+export const BrushCursor = styled.div.attrs<BrushProps>(
+  ({ point, size, rgb, brushColor }) => ({
+    style: {
+      left: `${point.x - size / 2}px`,
+      top: `${point.y - size / 2}px`,
+      width: `${size}px`,
+      height: `${size}px`,
+      backgroundColor: `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.4)`,
+      border: `2px solid ${brushColor}`,
+    },
+  })
+)<BrushProps>`
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
-  background-color: ${({ rgb }) => `rgb(${rgb[0]},${rgb[1]},${rgb[2]},0.4)`};
   z-index: 9999;
-  border: ${({ brushColor }) => `2px solid ${brushColor}`};
   border-radius: 50%;
   pointer-events: none;
 `;

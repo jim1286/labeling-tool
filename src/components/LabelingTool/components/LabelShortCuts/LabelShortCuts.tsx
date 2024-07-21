@@ -11,9 +11,12 @@ import { FlexColumn, FlexRow } from "@/components";
 import { BL } from "@/theme";
 import { IconHome } from "@tabler/icons-react";
 import { useTheme } from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const LabelShortCuts: React.FC = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const setLabelingMode = useBoundStore((state) => state.setLabelingMode);
   const labelingMode = useBoundStore((state) => state.labelingMode);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -25,6 +28,11 @@ const LabelShortCuts: React.FC = () => {
 
   const delay = (callback: () => void, ms: number) => {
     return new Promise(() => setTimeout(callback, ms));
+  };
+
+  const handleHomeClick = () => {
+    setLabelingMode(LabelingModeEnum.NONE);
+    navigate("/home");
   };
 
   if (isLoading) {
@@ -42,8 +50,13 @@ const LabelShortCuts: React.FC = () => {
         background: "#141414",
       }}
     >
-      <FlexRow gap={10} alignItems="center" style={{ cursor: "pointer" }}>
-        <IconHome color={theme.icon.primary} />
+      <FlexRow
+        gap={10}
+        alignItems="center"
+        style={{ cursor: "pointer" }}
+        onClick={handleHomeClick}
+      >
+        <IconHome color={theme.icon.primary} size={20} />
         <BL>홈으로 가기</BL>
       </FlexRow>
       {(() => {
