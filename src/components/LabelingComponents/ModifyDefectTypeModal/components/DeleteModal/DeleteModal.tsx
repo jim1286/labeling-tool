@@ -1,6 +1,5 @@
-import { Title } from "@/components";
 import { DefectType } from "@/interface";
-import { BM, BL } from "@/theme";
+import { BM, BL, H5 } from "@/theme";
 import { Modal, Row } from "antd";
 import React from "react";
 import useConfirmModal from "./hook";
@@ -34,7 +33,6 @@ const DeleteModal: React.FC<Props> = ({
     (state) => state.setDefaultDefectType
   );
   const currentImage = useBoundStore((state) => state.currentImage);
-  const selectedRevisionId = useBoundStore((state) => state.selectedRevisionId);
   // const { engineDBApi } = useEngineDB();
 
   const {
@@ -47,15 +45,6 @@ const DeleteModal: React.FC<Props> = ({
   const handleOkConfirmModal = async (
     selectedDefectType: DefectType | null
   ) => {
-    if (!selectedDefectType || !selectedRevisionId) {
-      return;
-    }
-
-    const params = {
-      collectionRevisionId: selectedRevisionId,
-      targetLabel: selectedDefectType.name,
-    };
-
     try {
       // await engineDBApi.deleteCollectionRevisionLabel(params);
       await fetchDefectTypeList();
@@ -96,7 +85,7 @@ const DeleteModal: React.FC<Props> = ({
       case "delete": {
         return (
           <Modal
-            title={<Title level={5}>레이블 삭제</Title>}
+            title={<H5>레이블 삭제</H5>}
             open={isOpen}
             width={"30%"}
             onOk={handleOpenConfirmModal}

@@ -1,7 +1,8 @@
 import { CustomModal } from "@/components";
-import { ValidateSpaceInput, Title } from "@/components";
+import { ValidateSpaceInput } from "@/components";
 import { uesValidateSpace } from "@/hooks";
 import { useBoundStore } from "@/store";
+import { H5 } from "@/theme";
 import { Row } from "antd";
 import { useEffect, useState } from "react";
 
@@ -41,7 +42,7 @@ const AddDefectTypeModal = ({ isOpen, onOk, onClose }: Props) => {
 
   return (
     <CustomModal
-      title={<Title level={5}>레이블 추가</Title>}
+      title={<H5>레이블 추가</H5>}
       open={isOpen}
       width={"30%"}
       okType={validInput ? "default" : "danger"}

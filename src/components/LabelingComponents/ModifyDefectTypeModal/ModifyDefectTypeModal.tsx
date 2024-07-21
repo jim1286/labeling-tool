@@ -1,9 +1,10 @@
 import { CustomModal } from "@/components";
-import { Title, FlexColumn, DefectLayer, FlexRow } from "@/components";
+import { FlexColumn, DefectLayer, FlexRow } from "@/components";
 import { useBoundStore } from "@/store";
 import { DeleteIcon, EditIcon } from "./style";
 import { useDeleteModal, useEditModal } from "./hook";
 import { DeleteModal, EditModal } from "./components";
+import { H5 } from "@/theme";
 
 interface Props {
   isOpen: boolean;
@@ -39,7 +40,7 @@ const ModifyDefectTypeModal: React.FC<Props> = ({ isOpen, onClose }) => {
             onClose={handleCloseEditModal}
             onOk={() => {
               handleCloseEditModal();
-              onClose("레이블 편집 성공");
+              onClose("레이블 수정 성공");
             }}
             selectedDefectType={selectedEditDefectType.current}
           />
@@ -61,7 +62,7 @@ const ModifyDefectTypeModal: React.FC<Props> = ({ isOpen, onClose }) => {
       case "modify": {
         return (
           <CustomModal
-            title={<Title level={5}>레이블 편집</Title>}
+            title={<H5>레이블 편집</H5>}
             open={isOpen}
             width={"30%"}
             destroyOnClose

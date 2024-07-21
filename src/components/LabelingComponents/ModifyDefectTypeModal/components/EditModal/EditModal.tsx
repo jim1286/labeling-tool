@@ -1,4 +1,4 @@
-import { FlexColumn, Title, ValidateSpaceInput } from "@/components";
+import { FlexColumn, ValidateSpaceInput } from "@/components";
 import {
   uesValidateSpace,
   useFetchDefectTypeList,
@@ -6,7 +6,7 @@ import {
 } from "@/hooks";
 import { DefectType } from "@/interface";
 import { useBoundStore } from "@/store";
-import { BM } from "@/theme";
+import { BM, H5 } from "@/theme";
 import { Modal, Row } from "antd";
 import React, { useEffect, useState } from "react";
 import { ConfirmModal } from "./components";
@@ -127,7 +127,7 @@ const EditModal: React.FC<Props> = ({
       case "edit": {
         return (
           <Modal
-            title={<Title level={5}>레이블 수정</Title>}
+            title={<H5>레이블 수정</H5>}
             open={isOpen}
             width={"30%"}
             okType={validInput ? "default" : "danger"}
