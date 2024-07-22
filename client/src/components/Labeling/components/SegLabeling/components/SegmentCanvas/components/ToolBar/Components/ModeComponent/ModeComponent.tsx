@@ -1,16 +1,16 @@
-import React from 'react';
-import { Container } from './styles';
-import { DrawModeEnum } from '@/enums';
-import { BrushMode, SamMode } from './components';
-import { ToolBarIcon, TooltipWrap } from '@/components';
-import { useMode } from './hook';
-import { Spin, notification } from 'antd';
-import { useBoundStore } from '@/store';
-import { useKeyDown } from '@/hooks';
+import React from "react";
+import { Container } from "./styles";
+import { DrawModeEnum } from "@/enums";
+import { BrushMode, SamMode } from "./components";
+import { ToolBarIcon, TooltipWrap } from "@/components";
+import { useMode } from "./hook";
+import { Spin, notification } from "antd";
+import { useBoundStore } from "@/store";
+import { useKeyDown } from "@/hooks";
 
 const ModeComponent: React.FC = () => {
   const [api, contextHolder] = notification.useNotification();
-  const { activateSam, handleClickSam, handleClickBrush } = useMode(api);
+  const { handleClickSam, handleClickBrush } = useMode(api);
   const drawMode = useBoundStore((state) => state.drawMode);
 
   const Mode = (() => {
@@ -25,15 +25,9 @@ const ModeComponent: React.FC = () => {
         return (
           <>
             {contextHolder}
-            {!activateSam ? (
-              <TooltipWrap title="스마트 라벨링이 생성되지 않았습니다.">
-                <Spin style={{ margin: '0 10px' }} />
-              </TooltipWrap>
-            ) : (
-              <TooltipWrap title="스마트 라벨링(Q)">
-                <ToolBarIcon iconType="wand" onClick={handleClickSam} />
-              </TooltipWrap>
-            )}
+            <TooltipWrap title="스마트 라벨링(Q)">
+              <ToolBarIcon iconType="wand" onClick={handleClickSam} />
+            </TooltipWrap>
             <TooltipWrap title="브러시(W)">
               <ToolBarIcon iconType="brush" onClick={handleClickBrush} />
             </TooltipWrap>
@@ -47,13 +41,13 @@ const ModeComponent: React.FC = () => {
     if (drawMode === DrawModeEnum.NONE) {
       handleClickBrush();
     }
-  }, ['KeyW']);
+  }, ["KeyW"]);
 
   useKeyDown(() => {
     if (drawMode === DrawModeEnum.NONE) {
       handleClickSam();
     }
-  }, ['KeyQ']);
+  }, ["KeyQ"]);
 
   return <Container>{Mode}</Container>;
 };

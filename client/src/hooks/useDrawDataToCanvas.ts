@@ -1,12 +1,14 @@
 import { BrushModeEnum, SamPointTypeEnum } from "@/enums";
-import { SamPointData, KeyPointData, ImageSize } from "@/interface";
+import {
+  SamPointData,
+  KeyPointData,
+  ImageSize,
+  Coordinates,
+} from "@/interface";
+import { SamService } from "@/services";
 import { DecodeUtil, LabelingUtil } from "@/utils";
-// import { useEngineDB } from '@engine-app/engine-db';
-import { Coordinates } from "@engine-app/types";
 
 const useDrawDataToCanvas = () => {
-  // const { engineDBApi } = useEngineDB();
-
   const drawBrushToCanvas = (
     ctx: CanvasRenderingContext2D,
     color: string,
@@ -66,16 +68,18 @@ const useDrawDataToCanvas = () => {
     samPointTypeList: SamPointTypeEnum[],
     samBoxPoint: number[][]
   ) => {
-    const samUint8ClampedArray = await engineDBApi?.getSamUint8ClampedArray(
-      samPointList,
-      samPointTypeList,
-      samBoxPoint,
-      imageSize.width,
-      imageSize.height,
-      [...LabelingUtil.convertHexToRgb(color), 128]
-    );
+    const samUint8ClampedArray = await SamService.postRunSam({
+      points: samPointList,
+      point_labels: samPointTypeList,
+      box: samBoxPoint,
+      width: imageSize.width,
+      height: imageSize.height,
+      color: [...LabelingUtil.convertHexToRgb(color), 128],
+    });
+
+    console.log(samUint8ClampedArray);
     const samImageData = new ImageData(
-      samUint8ClampedArray,
+      samUint8ClampedArray.data!,
       imageSize.width,
       imageSize.height
     );

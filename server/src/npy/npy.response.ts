@@ -1,11 +1,11 @@
-export class PostInitOnnx {
-  buffer: ArrayBufferLike;
-  byteOffset: number;
-  byteLength: number;
+export class PostLoadOnnxResponse {
+  message: string;
 }
 
-export class PostInitNpy {
-  buffer: ArrayBufferLike;
-  byteOffset: number;
-  byteLength: number;
+export class PostLoadNpyResponse {
+  message: string;
+}
+
+export class PostRunSamResponse {
+  data: Uint8ClampedArray | undefined;
 }

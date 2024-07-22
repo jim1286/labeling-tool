@@ -1,7 +1,3 @@
-export interface PostLoadNpyRequest {
-  imagePath: string;
-}
-
 export interface PostRunSamRequest {
   points: number[][];
   point_labels: number[];

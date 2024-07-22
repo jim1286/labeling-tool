@@ -15,8 +15,6 @@ export const useMode = (api: NotificationInstance) => {
   const currentImage = useBoundStore((state) => state.currentImage);
   // const { engineDBApi } = useEngineDB();
 
-  const [activateSam, setActivateSam] = useState(false);
-
   useEffect(() => {
     const fetchSam = async () => {
       // const npyPath = await engineDBApi?.getNpy(currentImage.path);
@@ -33,15 +31,6 @@ export const useMode = (api: NotificationInstance) => {
       api.open({
         type: "warning",
         message: "레이블을 선택해 주세요.",
-        placement: "bottomRight",
-      });
-      return;
-    }
-
-    if (!activateSam) {
-      api.open({
-        type: "warning",
-        message: "스마트 라벨링을 생성되지 않았습니다.",
         placement: "bottomRight",
       });
       return;
@@ -67,5 +56,5 @@ export const useMode = (api: NotificationInstance) => {
     setNewTaskLayer(taskLayerList, selectedDefectType);
   };
 
-  return { activateSam, handleClickSam, handleClickBrush };
+  return { handleClickSam, handleClickBrush };
 };

@@ -10,7 +10,6 @@ import {
   KeyPointLabelData,
 } from "@/interface";
 import {
-  BrushModeEnum,
   CanvasDataType,
   DrawModeEnum,
   LabelingModeEnum,
@@ -22,13 +21,11 @@ import { DecodeUtil, EncodeUtil, ImageUtil, LabelingUtil } from "@/utils";
 import { useEffect, useState } from "react";
 import useSleep from "./useSleep";
 import useSetNewTaskLayer from "./useSetNewTaskLayer";
-import { useGetNpyBufferQuery } from "@/queries";
-import useSam from "./useSam";
+import { usePostLoadNpyMutation, usePostLoadOnnxMutation } from "@/queries";
 
 const useInitLabeling = () => {
   const setSamMode = useBoundStore((state) => state.setSamMode);
   const setDrawMode = useBoundStore((state) => state.setDrawMode);
-  const setBrushMode = useBoundStore((state) => state.setBrushMode);
   const setTaskLayerList = useBoundStore((state) => state.setTaskLayerList);
   const setSelectedDefectType = useBoundStore(
     (state) => state.setSelectedDefectType
@@ -40,15 +37,10 @@ const useInitLabeling = () => {
   const defectTypeList = useBoundStore((state) => state.defectTypeList);
   const defaultDefectType = useBoundStore((state) => state.defaultDefectType);
   const [isLoading, setIsLoading] = useState(false);
-  const { isLoading: npyBufferIsLoading, data: npyBufferData } =
-    useGetNpyBufferQuery(labelingMode, currentImage.path);
-  const { initNpy } = useSam();
-
-  useEffect(() => {
-    if (labelingMode === LabelingModeEnum.SEGMENTATION && npyBufferData) {
-      initNpy(npyBufferData.npyBuffer.data);
-    }
-  }, [npyBufferData, labelingMode]);
+  const { mutateAsync: loadNpyMutateAsync, isPending: loadNpyIsPending } =
+    usePostLoadNpyMutation(currentImage.path);
+  const { mutateAsync: loadOnnxMutateAsync, isPending: loadOnnxIsPending } =
+    usePostLoadOnnxMutation();
 
   useEffect(() => {
     if (!currentImage.path) {
@@ -75,9 +67,11 @@ const useInitLabeling = () => {
 
     await useSleep(50);
     await initImageSize(currentImage);
+    await loadNpyMutateAsync();
+    await loadOnnxMutateAsync();
 
     if (defaultDefectType && !labelData) {
-      await initDrawMode(defaultDefectType, currentImage.path);
+      await initDrawMode(defaultDefectType);
     }
 
     if (labelData) {
@@ -96,10 +90,7 @@ const useInitLabeling = () => {
     }
   };
 
-  const initDrawMode = async (
-    defaultDefectType: DefectType,
-    imagePath: string
-  ) => {
+  const initDrawMode = async (defaultDefectType: DefectType) => {
     setSelectedDefectType(defaultDefectType);
 
     switch (labelingMode) {
@@ -113,17 +104,11 @@ const useInitLabeling = () => {
         break;
       }
       case LabelingModeEnum.SEGMENTATION: {
-        // const npyPath = await engineDBApi?.getNpy(imagePath);
-
-        // if (npyPath) {
-        //   setDrawMode(DrawModeEnum.SAM);
-        //   setSamMode(SamModeEnum.POINT);
-        // } else {
-        //   setDrawMode(DrawModeEnum.BRUSH);
-        //   setBrushMode(BrushModeEnum.PAINT);
-        // }
-
-        // setNewTaskLayer([], defaultDefectType);
+        await loadNpyMutateAsync();
+        await loadOnnxMutateAsync();
+        setDrawMode(DrawModeEnum.SAM);
+        setSamMode(SamModeEnum.POINT);
+        setNewTaskLayer([], defaultDefectType);
         break;
       }
     }
@@ -285,7 +270,7 @@ const useInitLabeling = () => {
   };
 
   return {
-    isLoading: isLoading || npyBufferIsLoading,
+    isLoading: isLoading || loadNpyIsPending || loadOnnxIsPending,
     initLabeling,
     getClsDefectType,
     getOdTaskLayer,

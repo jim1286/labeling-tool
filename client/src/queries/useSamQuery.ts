@@ -1,23 +1,27 @@
-import { LabelingModeEnum } from "@/enums";
-import { GetNpyBufferResponse, GetOnnxBufferResponse } from "@/http";
+import { PostLoadNpyResponse, PostLoadOnnxResponse } from "@/http";
 import { SamService } from "@/services";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
-export const useGetNpyBufferQuery = (
-  labelingMode: LabelingModeEnum,
-  imagePath?: string
-) => {
-  return useQuery<GetNpyBufferResponse, Error>({
-    queryKey: ["getNpyBufferQuery", imagePath],
-    enabled: !!imagePath && labelingMode === LabelingModeEnum.SEGMENTATION,
-    queryFn: () => SamService.getNpyBuffer({ imagePath: imagePath! }),
+export const usePostLoadNpyMutation = (imagePath?: string) => {
+  return useMutation<PostLoadNpyResponse, Error>({
+    mutationFn: () => SamService.postLoadNpy({ imagePath: imagePath! }),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
 };
 
-export const useGetOnnxBufferQuery = (labelingMode: LabelingModeEnum) => {
-  return useQuery<GetOnnxBufferResponse, Error>({
-    queryKey: ["getOnnxBufferQuery"],
-    enabled: labelingMode === LabelingModeEnum.SEGMENTATION,
-    queryFn: () => SamService.getOnnxBuffer(),
+export const usePostLoadOnnxMutation = () => {
+  return useMutation<PostLoadOnnxResponse, Error>({
+    mutationFn: () => SamService.postLoadOnnx(),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
 };

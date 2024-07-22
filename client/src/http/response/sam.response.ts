@@ -1,5 +1,11 @@
-import { SmallBuffer } from "@/interface";
+export interface PostLoadNpyResponse {
+  message: string;
+}
 
-export interface GetNpyBufferResponse extends SmallBuffer {}
+export interface PostLoadOnnxResponse {
+  message: string;
+}
 
-export interface GetOnnxBufferResponse extends SmallBuffer {}
+export class PostRunSamResponse {
+  data: Uint8ClampedArray | undefined;
+}

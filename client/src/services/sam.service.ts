@@ -1,24 +1,35 @@
 import {
-  GetNpyBufferRequest,
-  GetNpyBufferResponse,
-  GetOnnxBufferResponse,
+  PostLoadNpyRequest,
+  PostLoadNpyResponse,
+  PostLoadOnnxResponse,
+  PostRunSamRequest,
+  PostRunSamResponse,
 } from "@/http";
 import { axiosInstance } from ".";
 
 const SAM_URI = "/sam";
 
-export const getNpyBuffer = async (
-  params: GetNpyBufferRequest
-): Promise<GetNpyBufferResponse> => {
+export const postLoadNpy = async (
+  params: PostLoadNpyRequest
+): Promise<PostLoadNpyResponse> => {
   const uri = `${SAM_URI}/npy`;
-  const res = await axiosInstance.get(uri, { params });
+  const res = await axiosInstance.post(uri, params);
 
   return res.data;
 };
 
-export const getOnnxBuffer = async (): Promise<GetOnnxBufferResponse> => {
+export const postLoadOnnx = async (): Promise<PostLoadOnnxResponse> => {
   const uri = `${SAM_URI}/onnx`;
-  const res = await axiosInstance.get(uri);
+  const res = await axiosInstance.post(uri);
+
+  return res.data;
+};
+
+export const postRunSam = async (
+  params: PostRunSamRequest
+): Promise<PostRunSamResponse> => {
+  const uri = `${SAM_URI}/run`;
+  const res = await axiosInstance.post(uri, params);
 
   return res.data;
 };
