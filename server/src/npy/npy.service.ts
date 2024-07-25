@@ -8,8 +8,7 @@ import {
 } from './npy.response';
 import * as onnx from 'onnxruntime-node';
 import { dynamicImport } from 'tsimportlib';
-import { PostRunSamRequest } from './npy.request';
-import { PostLoadNpyRequest } from '../../../client/src/http/request/sam.request';
+import { PostLoadNpyRequest, PostRunSamRequest } from './npy.request';
 
 @Injectable()
 export class NpyService {

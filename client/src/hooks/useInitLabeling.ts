@@ -68,6 +68,10 @@ const useInitLabeling = () => {
     await useSleep(50);
     await initImageSize(currentImage);
 
+    if (labelingMode === LabelingModeEnum.SEGMENTATION) {
+      await initSam(currentImage.filename);
+    }
+
     if (defaultDefectType && !labelData) {
       await initDrawMode(defaultDefectType);
     }
@@ -88,6 +92,11 @@ const useInitLabeling = () => {
     }
   };
 
+  const initSam = async (fileName: string) => {
+    await loadNpyMutateAsync({ fileName });
+    await loadOnnxMutateAsync();
+  };
+
   const initDrawMode = async (defaultDefectType: DefectType) => {
     setSelectedDefectType(defaultDefectType);
 
@@ -102,8 +111,6 @@ const useInitLabeling = () => {
         break;
       }
       case LabelingModeEnum.SEGMENTATION: {
-        await loadNpyMutateAsync({ fileName: currentImage.filename });
-        await loadOnnxMutateAsync();
         setDrawMode(DrawModeEnum.SAM);
         setSamMode(SamModeEnum.POINT);
         setNewTaskLayer([], defaultDefectType);
