@@ -1,11 +1,11 @@
-export class PostLoadOnnxResponse {
+export interface PostInitSamResponse {
   message: string;
 }
 
-export class PostLoadNpyResponse {
+export interface PostUnInitSamResponse {
   message: string;
 }
 
-export class PostRunSamResponse {
+export interface PostRunSamResponse {
   data: number[];
 }

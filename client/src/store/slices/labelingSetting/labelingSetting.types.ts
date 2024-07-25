@@ -12,7 +12,6 @@ export type LabelingSettingState = {
   imageColorFilter: ImageColorFilter;
   defectTypeList: DefectType[];
   autoSave: boolean;
-  ableNpyRequest: boolean;
 };
 
 export type LabelingSettingAction = {
@@ -26,7 +25,6 @@ export type LabelingSettingAction = {
   setEnableReticle: (enableReticle: boolean) => void;
   setDefectTypeList: (defectTypeList: DefectType[]) => void;
   setAutoSave: (autoSave: boolean) => void;
-  setAbleNpyRequest: (ableNpyRequest: boolean) => void;
   resetLabelingSettingState: () => void;
 };
 

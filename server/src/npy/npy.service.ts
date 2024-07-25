@@ -1,54 +1,50 @@
 import { Injectable } from '@nestjs/common';
 import { join } from 'path';
 import { promises as fsPromises } from 'fs';
-import {
-  PostLoadOnnxResponse,
-  PostLoadNpyResponse,
-  PostRunSamResponse,
-} from './npy.response';
+import { PostInitSamResponse, PostRunSamResponse } from './npy.response';
 import * as onnx from 'onnxruntime-node';
 import { dynamicImport } from 'tsimportlib';
-import { PostLoadNpyRequest, PostRunSamRequest } from './npy.request';
+import { PostInitSamRequest, PostRunSamRequest } from './npy.request';
 
 @Injectable()
 export class NpyService {
   inferenceSession: undefined | onnx.InferenceSession = undefined;
   tensor: undefined | onnx.Tensor = undefined;
 
-  async loadOnnx(): Promise<PostLoadOnnxResponse> {
-    const onnxPath = join(__dirname, '../../python/sam_b_decoder.onnx');
-
-    try {
-      const onnxBuffer = await fsPromises.readFile(onnxPath);
-
-      if (!this.inferenceSession) {
-        this.inferenceSession = await this.getOnnx(onnxBuffer);
-      }
-
-      return { message: 'onnx loaded' };
-    } catch (error) {
-      throw new Error('Failed to create .onnx buffer');
-    }
-  }
-
-  async loadNpy(body: PostLoadNpyRequest): Promise<PostLoadNpyResponse> {
+  async initSam(body: PostInitSamRequest): Promise<PostInitSamResponse> {
     const { fileName } = body;
 
+    if (!this.inferenceSession) {
+      await this.loadOnnx();
+    }
+    await this.loadNpy(fileName);
+
+    return { message: 'init sam' };
+  }
+
+  async loadOnnx() {
+    const onnxPath = join(__dirname, '../../python/sam_b_decoder.onnx');
+    const onnxBuffer = await fsPromises.readFile(onnxPath);
+
+    this.inferenceSession = await this.loadModelBuffer(onnxBuffer);
+  }
+
+  async loadNpy(fileName: string) {
     const npyPath = join(
       __dirname,
       '../../python/',
       fileName.replace('.jpg', '.npy'),
     );
 
-    try {
-      const npyBuffer = await fsPromises.readFile(npyPath);
-      this.tensor = await this.getTensor(npyBuffer);
+    const npyBuffer = await fsPromises.readFile(npyPath);
+    this.tensor = await this.loadNpyBuffer(npyBuffer);
+  }
 
-      return { message: 'npy loaded' };
-    } catch (error) {
-      console.error('Error executing Python script or handling file:', error);
-      throw new Error('Failed to create .npy buffer');
-    }
+  async unInitSam() {
+    this.tensor = undefined;
+    this.inferenceSession = undefined;
+
+    return { message: 'unInit sam' };
   }
 
   async runSam(body: PostRunSamRequest): Promise<PostRunSamResponse> {
@@ -142,7 +138,6 @@ export class NpyService {
     };
   }
 
-  // mask array를 Uint8ClampedArray로 변환
   arrayToUint8ClampedArray = (
     input: number[],
     width: number,
@@ -164,7 +159,6 @@ export class NpyService {
     return uint8ClampedArray;
   };
 
-  // SAM을 메모리에 로드
   loadModelBuffer = async (
     modelBuffer: Buffer,
   ): Promise<onnx.InferenceSession> => {
@@ -175,14 +169,6 @@ export class NpyService {
 
     const session = await onnx.InferenceSession.create(arrayBuffer);
     return session;
-  };
-
-  getOnnx = async (modelBuffer: Buffer): Promise<onnx.InferenceSession> => {
-    try {
-      return await this.loadModelBuffer(modelBuffer);
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   loadNpyFile = async (npyBuffer: Buffer): Promise<any> => {
@@ -209,13 +195,5 @@ export class NpyService {
       npArray.shape,
     );
     return embeddings;
-  };
-
-  getTensor = async (npyBuffer: Buffer): Promise<onnx.Tensor> => {
-    try {
-      return await this.loadNpyBuffer(npyBuffer);
-    } catch (error) {
-      console.log(error);
-    }
   };
 }

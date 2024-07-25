@@ -36,7 +36,6 @@ const initialState: LabelingSettingState = {
     },
   ],
   autoSave: true,
-  ableNpyRequest: true,
   imageColorFilter: {
     contrast: 50,
     saturate: 50,
@@ -84,10 +83,6 @@ export const useLabelingSettingSlice: StateCreator<
   setEnableReticle: (enableReticle: boolean) =>
     set({
       enableReticle,
-    }),
-  setAbleNpyRequest: (ableNpyRequest: boolean) =>
-    set({
-      ableNpyRequest,
     }),
   resetLabelingSettingState: () => {
     set(initialState);

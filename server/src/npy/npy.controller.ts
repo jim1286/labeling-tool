@@ -1,24 +1,24 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { NpyService } from './npy.service';
 import {
-  PostLoadOnnxResponse,
-  PostLoadNpyResponse,
+  PostInitSamResponse,
   PostRunSamResponse,
+  PostUnInitSamResponse,
 } from './npy.response';
-import { PostLoadNpyRequest, PostRunSamRequest } from './npy.request';
+import { PostInitSamRequest, PostRunSamRequest } from './npy.request';
 
 @Controller('sam')
 export class NpyController {
   constructor(private readonly npyService: NpyService) {}
 
-  @Post('/onnx')
-  loadOnnx(): Promise<PostLoadOnnxResponse> {
-    return this.npyService.loadOnnx();
+  @Post('/init')
+  initSam(@Body() body: PostInitSamRequest): Promise<PostInitSamResponse> {
+    return this.npyService.initSam(body);
   }
 
-  @Post('/npy')
-  loadNpy(@Body() body: PostLoadNpyRequest): Promise<PostLoadNpyResponse> {
-    return this.npyService.loadNpy(body);
+  @Post('/unInit')
+  unInitSam(): Promise<PostUnInitSamResponse> {
+    return this.npyService.unInitSam();
   }
 
   @Post('/run')

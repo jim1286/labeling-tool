@@ -1,5 +1,5 @@
 import { FlexColumn, ValidateSpaceInput } from "@/components";
-import { uesValidateSpace } from "@/hooks";
+import { uesValidateSpace, useResetLabeling } from "@/hooks";
 import { DefectType } from "@/interface";
 import { useBoundStore } from "@/store";
 import { BM, H5 } from "@/theme";
@@ -24,6 +24,7 @@ const EditModal: React.FC<Props> = ({
 }) => {
   const defectTypeList = useBoundStore((state) => state.defectTypeList);
   const setDefectTypeList = useBoundStore((state) => state.setDefectTypeList);
+  const resetLabeling = useResetLabeling();
   const {
     isConfirmModalOpen,
     handleOpenConfirmModal,
@@ -67,15 +68,18 @@ const EditModal: React.FC<Props> = ({
       return;
     }
 
-    setDefectTypeList(
-      [...defectTypeList].splice(findDefectTypeIndex, 1, {
-        name: changeDefectType,
-        color: defectTypeColors[customPresetColors[findDefectTypeIndex]],
-        defectTypeNumber: findDefectTypeIndex + 1,
-      })
-    );
+    const newDefectType = {
+      name: changeDefectType,
+      color: defectTypeColors[customPresetColors[findDefectTypeIndex]],
+      defectTypeNumber: findDefectTypeIndex + 1,
+    };
 
+    const changedDefectTypeList = [...defectTypeList];
+    changedDefectTypeList.splice(findDefectTypeIndex, 1, newDefectType);
+
+    setDefectTypeList(changedDefectTypeList);
     handleCloseConfirmModal();
+    resetLabeling();
     onOk();
   };
 

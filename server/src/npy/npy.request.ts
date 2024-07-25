@@ -1,4 +1,4 @@
-export interface PostLoadNpyRequest {
+export interface PostInitSamRequest {
   fileName: string;
 }
 
