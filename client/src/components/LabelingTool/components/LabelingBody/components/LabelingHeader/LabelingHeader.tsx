@@ -10,11 +10,7 @@ import { Spin } from "antd";
 import { LM } from "@/theme";
 import { useBoundStore } from "@/store";
 import { LabelingModeEnum } from "@/enums";
-import {
-  useCurrentImageIsSamLoading,
-  useKeyDown,
-  useSubmitLabeling,
-} from "@/hooks";
+import { useKeyDown, useSubmitLabeling } from "@/hooks";
 
 const LabelingHeader: React.FC = () => {
   const setAutoSave = useBoundStore((state) => state.setAutoSave);
@@ -25,9 +21,7 @@ const LabelingHeader: React.FC = () => {
   const { isLoading, contextHolder, handleSubmit, fetchCollectionState } =
     useSubmitLabeling();
   const disableSubmit =
-    (labelingMode === LabelingModeEnum.CLASSIFICATION && !selectedDefectType) ||
-    (labelingMode === LabelingModeEnum.SEGMENTATION &&
-      useCurrentImageIsSamLoading());
+    labelingMode === LabelingModeEnum.CLASSIFICATION && !selectedDefectType;
 
   const handleSave = async () => {
     await handleSubmit();

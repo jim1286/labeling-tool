@@ -4,13 +4,11 @@ import { DrawModeEnum } from "@/enums";
 import { BrushMode, SamMode } from "./components";
 import { ToolBarIcon, TooltipWrap } from "@/components";
 import { useMode } from "./hook";
-import { Spin, notification } from "antd";
 import { useBoundStore } from "@/store";
 import { useKeyDown } from "@/hooks";
 
 const ModeComponent: React.FC = () => {
-  const [api, contextHolder] = notification.useNotification();
-  const { handleClickSam, handleClickBrush } = useMode(api);
+  const { contextHolder, handleClickSam, handleClickBrush } = useMode();
   const drawMode = useBoundStore((state) => state.drawMode);
 
   const Mode = (() => {

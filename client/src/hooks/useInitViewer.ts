@@ -1,13 +1,9 @@
-import { TaskLayer, ImageSize, DefectType } from "@/interface";
+import { TaskLayer, ImageSize, DefectType, LabelData } from "@/interface";
 import { LabelingModeEnum } from "@/enums";
-import { LabelDataItem } from "@engine-app/types";
 import { useEffect, useState } from "react";
 import { useInitLabeling, useSleep } from ".";
 
-const useInitViewer = (
-  viewerType: LabelingModeEnum,
-  viewerData: LabelDataItem
-) => {
+const useInitViewer = (viewerType: LabelingModeEnum, viewerData: LabelData) => {
   const [isLoading, setIsLoading] = useState(false);
   const [defectType, setDefectType] = useState<DefectType | undefined>(
     undefined
@@ -51,7 +47,7 @@ const useInitViewer = (
     }
   }, [viewerData]);
 
-  const initData = (imageData: LabelDataItem) => {
+  const initData = (imageData: LabelData) => {
     switch (viewerType) {
       case LabelingModeEnum.CLASSIFICATION: {
         setDefectType(getClsDefectType(imageData));

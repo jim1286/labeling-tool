@@ -1,5 +1,5 @@
 export interface PostLoadNpyRequest {
-  imagePath: string;
+  fileName: string;
 }
 
 export interface PostRunSamRequest {

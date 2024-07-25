@@ -1,6 +1,10 @@
-import { ImageSize, KeyPointData, TaskLayerData } from '@/interface';
-import { useBoundStore } from '@/store';
-import { Coordinates } from '@engine-app/types';
+import {
+  Coordinates,
+  ImageSize,
+  KeyPointData,
+  TaskLayerData,
+} from "@/interface";
+import { useBoundStore } from "@/store";
 
 const useCalculateLayerInfo = () => {
   const setLayerInfo = useBoundStore((state) => state.setLayerInfo);
@@ -49,7 +53,7 @@ const useCalculateLayerInfo = () => {
     originImageSize: ImageSize,
     scale: number
   ) => {
-    const ctx = canvas.getContext('2d', {
+    const ctx = canvas.getContext("2d", {
       willReadFrequently: true,
     });
 
@@ -93,7 +97,8 @@ const useCalculateLayerInfo = () => {
     }
 
     const width = checkSize === 0 ? 0 : Math.round(maxX / scale - minX / scale);
-    const height = checkSize === 0 ? 0 : Math.round(maxY / scale - minY / scale);
+    const height =
+      checkSize === 0 ? 0 : Math.round(maxY / scale - minY / scale);
     const size = Math.round(checkSize / sizeScale);
 
     setLayerInfo({ width, height, size });

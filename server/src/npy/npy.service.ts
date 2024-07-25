@@ -9,6 +9,7 @@ import {
 import * as onnx from 'onnxruntime-node';
 import { dynamicImport } from 'tsimportlib';
 import { PostRunSamRequest } from './npy.request';
+import { PostLoadNpyRequest } from '../../../client/src/http/request/sam.request';
 
 @Injectable()
 export class NpyService {
@@ -31,12 +32,13 @@ export class NpyService {
     }
   }
 
-  async loadNpy(): Promise<PostLoadNpyResponse> {
-    const imagePath = 'cat_1.jpg'; // 이미지 파일 경로
+  async loadNpy(body: PostLoadNpyRequest): Promise<PostLoadNpyResponse> {
+    const { fileName } = body;
+
     const npyPath = join(
       __dirname,
       '../../python/',
-      imagePath.replace('.jpg', '.npy'),
+      fileName.replace('.jpg', '.npy'),
     );
 
     try {
@@ -51,9 +53,8 @@ export class NpyService {
   }
 
   async runSam(body: PostRunSamRequest): Promise<PostRunSamResponse> {
-    const { points, point_labels, box, width, height, color } = body;
+    const { points, point_labels, box, width, height } = body;
 
-    console.log(this.tensor);
     if (!this.tensor) {
       throw new Error('tensor is not loaded');
     }
@@ -138,12 +139,7 @@ export class NpyService {
     );
 
     return {
-      data: this.arrayToUint8ClampedArray(
-        best_mask,
-        masks.dims[2],
-        masks.dims[3],
-        color,
-      ),
+      data: Object.keys(best_mask).map((key) => best_mask[key]),
     };
   }
 

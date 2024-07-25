@@ -5,7 +5,7 @@ import {
   PostLoadNpyResponse,
   PostRunSamResponse,
 } from './npy.response';
-import { PostRunSamRequest } from './npy.request';
+import { PostLoadNpyRequest, PostRunSamRequest } from './npy.request';
 
 @Controller('sam')
 export class NpyController {
@@ -17,8 +17,8 @@ export class NpyController {
   }
 
   @Post('/npy')
-  loadNpy(): Promise<PostLoadNpyResponse> {
-    return this.npyService.loadNpy();
+  loadNpy(@Body() body: PostLoadNpyRequest): Promise<PostLoadNpyResponse> {
+    return this.npyService.loadNpy(body);
   }
 
   @Post('/run')

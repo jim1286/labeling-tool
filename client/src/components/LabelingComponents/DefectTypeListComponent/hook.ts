@@ -1,19 +1,14 @@
 import { DrawModeEnum, LabelingModeEnum } from "@/enums";
-import {
-  useFetchDefectTypeList,
-  useKeyDown,
-  useSetNewTaskLayer,
-} from "@/hooks";
+import { useKeyDown, useSetNewTaskLayer } from "@/hooks";
 import { DefectType } from "@/interface";
 import { useBoundStore } from "@/store";
 import { NotificationInstance } from "antd/es/notification/interface";
-import { useEffect, useState } from "react";
-// import { useEngineDB } from '@engine-app/engine-db';
+import { useState } from "react";
 import { cloneDeep } from "lodash";
+import { customPresetColors, defectTypeColors } from "@/theme/color";
 
 export const useDefectType = (api: NotificationInstance) => {
   const setNewTaskLayer = useSetNewTaskLayer();
-  const fetchDefectTypeList = useFetchDefectTypeList();
   const setDrawMode = useBoundStore((state) => state.setDrawMode);
   const setTaskLayerList = useBoundStore((state) => state.setTaskLayerList);
   const setDefaultDefectType = useBoundStore(
@@ -29,10 +24,6 @@ export const useDefectType = (api: NotificationInstance) => {
   const selectedTaskLayerId = useBoundStore(
     (state) => state.selectedTaskLayerId
   );
-
-  useEffect(() => {
-    fetchDefectTypeList();
-  }, []);
 
   const handleClick = (defectType: DefectType) => {
     handleDefectType(defectType);
@@ -120,14 +111,12 @@ export const useDefectType = (api: NotificationInstance) => {
 };
 
 export const useDefectAddModal = (api: NotificationInstance) => {
-  const fetchDefectTypeList = useFetchDefectTypeList();
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const defectTypeList = useBoundStore((state) => state.defectTypeList);
+  const setDefectTypeList = useBoundStore((state) => state.setDefectTypeList);
   const setDisableKeyInLabeling = useBoundStore(
     (state) => state.setDisableKeyInLabeling
   );
-  const selectedRevisionId = useBoundStore((state) => state.selectedRevisionId);
-  // const { engineDBApi } = useEngineDB();
-
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const handleAddModalClose = (message?: string) => {
     setDisableKeyInLabeling(false);
@@ -148,17 +137,14 @@ export const useDefectAddModal = (api: NotificationInstance) => {
   };
 
   const handleAddModalOk = async (inputValue: string) => {
-    if (!selectedRevisionId) {
-      return;
-    }
-
-    const params = {
-      collectionRevisionId: selectedRevisionId,
-      label: inputValue,
-    };
-
-    // await engineDBApi?.addCollectionRevisionLabel(params);
-    await fetchDefectTypeList();
+    setDefectTypeList([
+      ...defectTypeList,
+      {
+        name: inputValue,
+        color: defectTypeColors[customPresetColors[defectTypeList.length - 1]],
+        defectTypeNumber: defectTypeList.length,
+      },
+    ]);
   };
 
   return {

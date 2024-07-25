@@ -1,30 +1,24 @@
 import { LabelData, OdData } from "@/interface";
-import { CoreUtil } from "@/utils";
 import { DrawModeEnum, LabelingModeEnum } from "@/enums";
 import { useBoundStore } from "@/store";
-// import { LabelData, ModifyLabelDataParam } from "@engine-app/types";
-// import { useEngineDB } from '@engine-app/engine-db';
 import { notification } from "antd";
 import { useState } from "react";
 import { cloneDeep } from "lodash";
 import {
-  useResetLabeling,
   useSubmitSegmentation,
-  useFetchClickedNpyRequest,
   useSleep,
   useSamEditData,
   useSubmitKeyPoint,
 } from "@/hooks";
+import { collectionImageList } from "@/const";
 
 const useSubmitLabeling = () => {
-  const resetLabeling = useResetLabeling();
   const convertKeyPointData = useSubmitKeyPoint();
   const convertSegmentData = useSubmitSegmentation();
-  const setCurrentImage = useBoundStore((state) => state.setCurrentImage);
   const setDisableKeyInLabeling = useBoundStore(
     (state) => state.setDisableKeyInLabeling
   );
-  const fetchClickedNpyRequest = useFetchClickedNpyRequest();
+  const setCurrentImage = useBoundStore((state) => state.setCurrentImage);
   const getSamEditData = useSamEditData();
   const drawMode = useBoundStore((state) => state.drawMode);
   const editDataList = useBoundStore((state) => state.editDataList);
@@ -38,7 +32,6 @@ const useSubmitLabeling = () => {
   );
   const [api, contextHolder] = notification.useNotification();
   const [isLoading, setIsLoading] = useState(false);
-  // const { engineDBApi } = useEngineDB();
 
   const imageSize = {
     imageHeight: originImageSize.height,
@@ -173,70 +166,45 @@ const useSubmitLabeling = () => {
   };
 
   const saveLabeling = async (labelData: LabelData) => {
-    // if (!currentImage || !engineDBApi || !selectedRevisionId) {
-    //   return;
-    // }
-    // try {
-    //   const param: ModifyLabelDataParam = {
-    //     imageId: currentImage.imageId,
-    //     collectionRevisionId: selectedRevisionId,
-    //     data: labelData,
-    //   };
-    //   await engineDBApi?.modifyLabelData(param);
-    //   api.open({
-    //     type: "success",
-    //     message: `${currentImage.filename} 저장 완료`,
-    //     placement: "bottomRight",
-    //   });
-    // } catch (error) {
-    //   console.log(error);
-    //   api.open({
-    //     type: "error",
-    //     message: `${currentImage.filename} 저장 실패`,
-    //     placement: "bottomRight",
-    //   });
-    // } finally {
-    //   setIsLoading(false);
-    //   setDisableKeyInLabeling(false);
-    // }
+    try {
+      const param = {
+        imageId: currentImage.imageId,
+        data: labelData,
+      };
+
+      api.open({
+        type: "success",
+        message: `${currentImage.filename} 저장 완료`,
+        placement: "bottomRight",
+      });
+    } catch (error) {
+      console.log(error);
+      api.open({
+        type: "error",
+        message: `${currentImage.filename} 저장 실패`,
+        placement: "bottomRight",
+      });
+    } finally {
+      setIsLoading(false);
+      setDisableKeyInLabeling(false);
+    }
   };
 
   const fetchCollectionState = async () => {
-    // if (!engineDBApi || !selectedRevisionId) {
-    //   return;
-    // }
-    // const collectionImageList =
-    //   await engineDBApi.getCollectionRevisionImageList({
-    //     collectionRevisionId: selectedRevisionId,
-    //   });
-    // resetLabeling();
-    // const currentImageIndex = collectionImageList.findIndex(
-    //   (ele) => ele.imageId === currentImage.imageId
-    // );
-    // if (currentImageIndex === -1) {
-    //   return;
-    // }
-    // const upList = collectionImageList.slice(0, currentImageIndex);
-    // const downList = collectionImageList.slice(currentImageIndex + 1);
-    // const nextNotLabelConfirmed = [...downList, ...upList].find(
-    //   (ele) => !ele.isLabelConfirmed
-    // );
-    // const isLastImage = collectionImageList.length === currentImageIndex + 1;
-    // const nextImageData = await engineDBApi.getImageWithLabelData({
-    //   collectionRevisionId: selectedRevisionId,
-    //   imageId: nextNotLabelConfirmed
-    //     ? nextNotLabelConfirmed.imageId
-    //     : isLastImage
-    //     ? collectionImageList[currentImageIndex].imageId
-    //     : collectionImageList[currentImageIndex + 1].imageId,
-    // });
-    // setCurrentImage({
-    //   ...nextImageData,
-    //   path: CoreUtil.wrapFileScheme(nextImageData.path),
-    // });
-    // if (labelingMode === LabelingModeEnum.SEGMENTATION) {
-    //   await fetchClickedNpyRequest(nextImageData.imageId);
-    // }
+    const findImageIndex = collectionImageList.findIndex(
+      (image) => image.imageId === currentImage.imageId
+    );
+
+    if (findImageIndex === -1) {
+      return;
+    }
+
+    if (collectionImageList.length - 1 === findImageIndex) {
+      setCurrentImage({ ...collectionImageList[0], data: null });
+      return;
+    }
+
+    setCurrentImage({ ...collectionImageList[findImageIndex], data: null });
   };
 
   return { isLoading, contextHolder, handleSubmit, fetchCollectionState };

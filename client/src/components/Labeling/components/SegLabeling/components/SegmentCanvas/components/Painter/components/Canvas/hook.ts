@@ -4,7 +4,7 @@ import {
   MouseModeEnum,
   SamModeEnum,
   SamPointTypeEnum,
-} from '@/enums';
+} from "@/enums";
 import {
   useCalculateLayerInfo,
   useDrawDataToCanvas,
@@ -12,7 +12,7 @@ import {
   useKeyUp,
   useSamToCanvas,
   useSleep,
-} from '@/hooks';
+} from "@/hooks";
 import {
   BrushData,
   SamPointData,
@@ -20,13 +20,13 @@ import {
   SamData,
   SamBoxData,
   DefectType,
-} from '@/interface';
-import { useBoundStore } from '@/store';
-import { LabelingUtil } from '@/utils';
-import { Coordinates } from '@engine-app/types';
-import { throttle } from 'lodash';
-import { nanoid } from 'nanoid';
-import { useCallback, useMemo, useRef, useState } from 'react';
+  Coordinates,
+} from "@/interface";
+import { useBoundStore } from "@/store";
+import { LabelingUtil } from "@/utils";
+import { throttle } from "lodash";
+import { nanoid } from "nanoid";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 export const useCanvas = (canvasRef: React.RefObject<HTMLCanvasElement>) => {
   const setIsDrawing = useBoundStore((state) => state.setIsDrawing);
@@ -46,9 +46,9 @@ export const useCanvas = (canvasRef: React.RefObject<HTMLCanvasElement>) => {
   const linePath = useRef<Coordinates[]>([]);
   const isOnRange = useRef(true);
   const [previewSam, setPreviewSam] = useState<boolean>(false);
-  const [hoveringSamPoint, setHoveringSamPoint] = useState<Coordinates | undefined>(
-    undefined
-  );
+  const [hoveringSamPoint, setHoveringSamPoint] = useState<
+    Coordinates | undefined
+  >(undefined);
   const { drawBrushToCanvas } = useDrawDataToCanvas();
 
   const getCurrentPoint = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -66,17 +66,20 @@ export const useCanvas = (canvasRef: React.RefObject<HTMLCanvasElement>) => {
 
   const drawBrush = useMemo(
     () =>
-      throttle((ctx: CanvasRenderingContext2D, selectedDefectType: DefectType) => {
-        drawBrushToCanvas(
-          ctx,
-          selectedDefectType.color,
-          scale,
-          brushSize,
-          brushMode,
-          linePath.current,
-          0.5
-        );
-      }, 10),
+      throttle(
+        (ctx: CanvasRenderingContext2D, selectedDefectType: DefectType) => {
+          drawBrushToCanvas(
+            ctx,
+            selectedDefectType.color,
+            scale,
+            brushSize,
+            brushMode,
+            linePath.current,
+            0.5
+          );
+        },
+        10
+      ),
     [scale, selectedDefectType, brushSize, brushMode]
   );
 
@@ -86,7 +89,7 @@ export const useCanvas = (canvasRef: React.RefObject<HTMLCanvasElement>) => {
         return;
       }
 
-      const ctx = canvasRef.current.getContext('2d', {
+      const ctx = canvasRef.current.getContext("2d", {
         willReadFrequently: true,
       });
 
@@ -112,7 +115,7 @@ export const useCanvas = (canvasRef: React.RefObject<HTMLCanvasElement>) => {
     () =>
       throttle((currentPoint: Coordinates) => {
         setHoveringSamPoint(currentPoint);
-      }, 10),
+      }, 50),
     [scale, selectedDefectType, brushSize, brushMode]
   );
 
@@ -143,7 +146,8 @@ export const useCanvas = (canvasRef: React.RefObject<HTMLCanvasElement>) => {
             }
 
             const boxIndex = editDataList.findIndex(
-              (editData) => (editData.data as SamData).samMode === SamModeEnum.BOX
+              (editData) =>
+                (editData.data as SamData).samMode === SamModeEnum.BOX
             );
 
             if (boxIndex === -1) {
@@ -203,13 +207,18 @@ export const useCanvas = (canvasRef: React.RefObject<HTMLCanvasElement>) => {
               break;
             }
 
-            const ctx = canvasRef.current.getContext('2d');
+            const ctx = canvasRef.current.getContext("2d");
 
             if (!ctx) {
               break;
             }
 
-            ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+            ctx.clearRect(
+              0,
+              0,
+              canvasRef.current.width,
+              canvasRef.current.height
+            );
             break;
           }
         }
@@ -252,8 +261,13 @@ export const useCanvas = (canvasRef: React.RefObject<HTMLCanvasElement>) => {
       }
       case DrawModeEnum.SAM: {
         const samPointType =
-          e.button === 0 ? SamPointTypeEnum.POSITIVE : SamPointTypeEnum.NEGATIVE;
-        const startPoint: Coordinates = [linePath.current[0][0], linePath.current[0][1]];
+          e.button === 0
+            ? SamPointTypeEnum.POSITIVE
+            : SamPointTypeEnum.NEGATIVE;
+        const startPoint: Coordinates = [
+          linePath.current[0][0],
+          linePath.current[0][1],
+        ];
         const currentPoint: Coordinates = getCurrentPoint(e);
 
         switch (samMode) {
@@ -324,14 +338,14 @@ export const useCanvas = (canvasRef: React.RefObject<HTMLCanvasElement>) => {
     if (samMode === SamModeEnum.POINT) {
       setPreviewSam(true);
     }
-  }, ['ShiftLeft']);
+  }, ["ShiftLeft"]);
 
   useKeyUp(async () => {
     if (samMode === SamModeEnum.POINT) {
       await useSleep(50);
       setPreviewSam(false);
     }
-  }, ['ShiftLeft']);
+  }, ["ShiftLeft"]);
 
   return {
     scale,
@@ -362,12 +376,12 @@ export const useHoveringSamToCanvas = () => {
     linePath: Coordinates[],
     hoveringSamPoint: Coordinates
   ) => {
-    const drawCanvas = document.createElement('canvas');
+    const drawCanvas = document.createElement("canvas");
 
     drawCanvas.width = imageSize.width;
     drawCanvas.height = imageSize.height;
 
-    const drawCtx = drawCanvas.getContext('2d', {
+    const drawCtx = drawCanvas.getContext("2d", {
       willReadFrequently: true,
     });
 
@@ -422,7 +436,7 @@ export const useHoveringSamToCanvas = () => {
     const newEditDataList = [...editDataList].concat(newEditData);
 
     await samToCanvas(
-      'hover',
+      "hover",
       drawCtx,
       color,
       originImageSize,
@@ -438,7 +452,10 @@ export const useHoveringSamToCanvas = () => {
 
       switch (samDataMode) {
         case SamModeEnum.POINT: {
-          if (samMode === SamModeEnum.POINT && index === newEditDataList.length - 1) {
+          if (
+            samMode === SamModeEnum.POINT &&
+            index === newEditDataList.length - 1
+          ) {
             break;
           }
 

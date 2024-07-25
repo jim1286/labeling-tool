@@ -6,6 +6,6 @@ export interface PostLoadOnnxResponse {
   message: string;
 }
 
-export class PostRunSamResponse {
-  data: Uint8ClampedArray | undefined;
+export interface PostRunSamResponse {
+  data: number[];
 }

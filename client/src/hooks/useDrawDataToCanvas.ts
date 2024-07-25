@@ -77,9 +77,13 @@ const useDrawDataToCanvas = () => {
       color: [...LabelingUtil.convertHexToRgb(color), 128],
     });
 
-    console.log(samUint8ClampedArray);
     const samImageData = new ImageData(
-      samUint8ClampedArray.data!,
+      arrayToUint8ClampedArray(
+        samUint8ClampedArray.data,
+        imageSize.width,
+        imageSize.height,
+        [...LabelingUtil.convertHexToRgb(color), 128]
+      ),
       imageSize.width,
       imageSize.height
     );
@@ -101,6 +105,28 @@ const useDrawDataToCanvas = () => {
       canvasSize.width,
       canvasSize.height
     );
+  };
+
+  // mask array를 Uint8ClampedArray로 변환
+  const arrayToUint8ClampedArray = (
+    input: number[],
+    width: number,
+    height: number,
+    color: number[] // rgba
+  ): Uint8ClampedArray => {
+    const [r, g, b, a] = color;
+    const uint8ClampedArray = new Uint8ClampedArray(4 * width * height).fill(0);
+
+    for (let i = 0; i < input.length; i++) {
+      if (input[i] > 0) {
+        uint8ClampedArray[4 * i + 0] = r;
+        uint8ClampedArray[4 * i + 1] = g;
+        uint8ClampedArray[4 * i + 2] = b;
+        uint8ClampedArray[4 * i + 3] = a;
+      }
+    }
+
+    return uint8ClampedArray;
   };
 
   const drawBoxToCanvas = (

@@ -38,7 +38,7 @@ const useInitLabeling = () => {
   const defaultDefectType = useBoundStore((state) => state.defaultDefectType);
   const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync: loadNpyMutateAsync, isPending: loadNpyIsPending } =
-    usePostLoadNpyMutation(currentImage.path);
+    usePostLoadNpyMutation();
   const { mutateAsync: loadOnnxMutateAsync, isPending: loadOnnxIsPending } =
     usePostLoadOnnxMutation();
 
@@ -67,8 +67,6 @@ const useInitLabeling = () => {
 
     await useSleep(50);
     await initImageSize(currentImage);
-    await loadNpyMutateAsync();
-    await loadOnnxMutateAsync();
 
     if (defaultDefectType && !labelData) {
       await initDrawMode(defaultDefectType);
@@ -104,7 +102,7 @@ const useInitLabeling = () => {
         break;
       }
       case LabelingModeEnum.SEGMENTATION: {
-        await loadNpyMutateAsync();
+        await loadNpyMutateAsync({ fileName: currentImage.filename });
         await loadOnnxMutateAsync();
         setDrawMode(DrawModeEnum.SAM);
         setSamMode(SamModeEnum.POINT);

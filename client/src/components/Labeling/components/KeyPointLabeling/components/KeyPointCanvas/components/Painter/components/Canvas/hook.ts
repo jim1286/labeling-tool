@@ -1,10 +1,14 @@
-import { CanvasDataType, MouseModeEnum } from '@/enums';
-import { useCalculateLayerInfo, useDrawDataToCanvas } from '@/hooks';
-import { EditData, KeyPointData, TaskLayerData } from '@/interface';
-import { useBoundStore } from '@/store';
-import { Coordinates } from '@engine-app/types';
-import { notification } from 'antd';
-import { nanoid } from 'nanoid';
+import { CanvasDataType, MouseModeEnum } from "@/enums";
+import { useCalculateLayerInfo, useDrawDataToCanvas } from "@/hooks";
+import {
+  Coordinates,
+  EditData,
+  KeyPointData,
+  TaskLayerData,
+} from "@/interface";
+import { useBoundStore } from "@/store";
+import { notification } from "antd";
+import { nanoid } from "nanoid";
 
 export const useCanvas = (
   canvasRef: React.RefObject<HTMLCanvasElement>,
@@ -29,7 +33,7 @@ export const useCanvas = (
       return;
     }
 
-    const ctx = canvasRef.current.getContext('2d', {
+    const ctx = canvasRef.current.getContext("2d", {
       willReadFrequently: true,
     });
 
@@ -37,7 +41,8 @@ export const useCanvas = (
       return;
     }
 
-    const prevData = currentDataList[currentDataList.length - 1].data as KeyPointData;
+    const prevData = currentDataList[currentDataList.length - 1]
+      .data as KeyPointData;
 
     ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
@@ -63,7 +68,10 @@ export const useCanvas = (
     ctx.strokeStyle = selectedDefectType.color;
     ctx.lineWidth = lineWidth;
 
-    ctx.moveTo(prevData.coordinates[0] * scale, prevData.coordinates[1] * scale);
+    ctx.moveTo(
+      prevData.coordinates[0] * scale,
+      prevData.coordinates[1] * scale
+    );
     ctx.lineTo(hoveringPoint[0] * scale, hoveringPoint[1] * scale);
 
     ctx.stroke();
@@ -71,7 +79,9 @@ export const useCanvas = (
     calculateKeyPointLayerInfo(currentDataList, hoveringPoint);
   };
 
-  const getCurrentPoint = (e: React.MouseEvent<HTMLCanvasElement>): Coordinates => {
+  const getCurrentPoint = (
+    e: React.MouseEvent<HTMLCanvasElement>
+  ): Coordinates => {
     const rect = e.currentTarget.getBoundingClientRect();
 
     const xPosition = e.clientX - rect.left;
@@ -94,9 +104,9 @@ export const useCanvas = (
   const handleCanvasMouseUp = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (currentDataList.length === 17) {
       api.open({
-        type: 'warning',
-        message: '점은 최대 17개까지 찍을 수 있습니다.',
-        placement: 'bottomRight',
+        type: "warning",
+        message: "점은 최대 17개까지 찍을 수 있습니다.",
+        placement: "bottomRight",
       });
 
       return;

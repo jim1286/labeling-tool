@@ -3,88 +3,90 @@ import {
   Container,
   CollectionHeader,
   CollectionBody,
-  SmartLabeling,
   CollectionContainer,
+  CollectionItem,
 } from "./styles";
 import { BS, LM } from "@/theme";
-import { useBoundStore } from "@/store";
 import { NumberUtil } from "@/utils";
-import { LazyImageComponent } from "./components";
-import { Spin, Switch } from "antd";
-import { TooltipWrap } from "@/components/TooltipWrap";
-import useCollection from "./hook";
-import { LabelingModeEnum } from "@/enums";
+import { useKeyDown } from "@/hooks";
+import { useBoundStore } from "@/store";
+import { collectionImageList } from "@/const";
 
 const Collection: React.FC = () => {
-  const setAbleNpyRequest = useBoundStore((state) => state.setAbleNpyRequest);
-  const npyRequests = useBoundStore((state) => state.npyRequests);
-  const {
-    isLoading,
-    contextHolder,
-    ableNpyRequest,
-    currentImage,
-    labelingMode,
-    labeledImageLength,
-    collectionImageLength,
-    lazyLoadedCollectionImageList,
-    lastElementRef,
-    handleClickCollectionImage,
-  } = useCollection();
+  const currentImage = useBoundStore((state) => state.currentImage);
+  const setCurrentImage = useBoundStore((state) => state.setCurrentImage);
+
+  const handleClickCollectionImage = (imageId: number) => {
+    const findImage = collectionImageList.find(
+      (image) => image.imageId === imageId
+    );
+
+    if (findImage) {
+      setCurrentImage({ ...findImage, data: null });
+    }
+  };
+
+  useKeyDown(async () => {
+    const currentImageIndex = collectionImageList.findIndex(
+      (collectionImage) => collectionImage.imageId === currentImage.imageId
+    );
+
+    if (currentImageIndex === -1) {
+      return;
+    }
+
+    if (currentImageIndex === 0) {
+      handleClickCollectionImage(
+        collectionImageList[collectionImageList.length - 1].imageId
+      );
+      return;
+    }
+
+    handleClickCollectionImage(
+      collectionImageList[currentImageIndex - 1].imageId
+    );
+  }, ["KeyA"]);
+
+  useKeyDown(() => {
+    const currentImageIndex = collectionImageList.findIndex(
+      (collectionImage) => collectionImage.imageId === currentImage.imageId
+    );
+
+    if (currentImageIndex === -1) {
+      return;
+    }
+
+    if (collectionImageList.length - 1 === currentImageIndex) {
+      handleClickCollectionImage(collectionImageList[0].imageId);
+      return;
+    }
+
+    handleClickCollectionImage(
+      collectionImageList[currentImageIndex + 1].imageId
+    );
+  }, ["KeyD"]);
 
   return (
     <Container>
-      {contextHolder}
       <CollectionHeader>
-        <LM>{`컬렉션 - ${NumberUtil.getFloatFixed(
-          (labeledImageLength / collectionImageLength) * 100,
-          2
-        )}%`}</LM>
-        <LM>{`${NumberUtil.numberWithCommas(
-          labeledImageLength
-        )} / ${NumberUtil.numberWithCommas(collectionImageLength)}`}</LM>
+        <LM>컬렉션</LM>
+        <LM>{NumberUtil.numberWithCommas(collectionImageList.length)}</LM>
       </CollectionHeader>
-      {labelingMode === LabelingModeEnum.SEGMENTATION && (
-        <SmartLabeling>
-          <TooltipWrap title="생성하기 ON/OFF(Ctrl+Tab)">
-            <BS>스마트 라벨링 생성하기</BS>
-          </TooltipWrap>
-          <Switch
-            value={ableNpyRequest}
-            onChange={() => setAbleNpyRequest(!ableNpyRequest)}
-          />
-        </SmartLabeling>
-      )}
       <CollectionContainer>
         <CollectionBody>
-          {lazyLoadedCollectionImageList.map((collectionImage, index) => {
-            const isSamLoading =
-              ableNpyRequest &&
-              npyRequests.find(
-                (npyRequest) => collectionImage.path === npyRequest
-              );
-            const iconType = isSamLoading
-              ? "spin"
-              : collectionImage.isLabelConfirmed
-              ? "labeled"
-              : "unlabeled";
-
-            return (
-              <LazyImageComponent
-                key={collectionImage.imageId}
-                iconType={iconType}
-                isSelected={currentImage.imageId === collectionImage.imageId}
-                collectionImage={collectionImage}
-                isLastElement={
-                  index === lazyLoadedCollectionImageList.length - 1
-                }
-                lastElementRef={lastElementRef}
-                handleClickImage={handleClickCollectionImage}
-              />
-            );
-          })}
+          {collectionImageList.map((collectionImage) => (
+            <CollectionItem
+              key={collectionImage.imageId}
+              isSelected={currentImage.imageId === collectionImage.imageId}
+              onClick={() => {
+                handleClickCollectionImage(collectionImage.imageId);
+              }}
+            >
+              <BS style={{ width: "80%" }}>{collectionImage.filename}</BS>
+            </CollectionItem>
+          ))}
         </CollectionBody>
       </CollectionContainer>
-      {isLoading && <Spin tip="저장 중..." size="large" fullscreen />}
     </Container>
   );
 };

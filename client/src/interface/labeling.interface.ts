@@ -10,6 +10,7 @@ export type CurrentImage = {
   imageId: number;
   filename: string;
   path: string;
+  isLabelConfirmed: boolean;
   data: LabelData | null;
 };
 

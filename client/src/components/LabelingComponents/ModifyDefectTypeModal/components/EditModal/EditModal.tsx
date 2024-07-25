@@ -1,19 +1,13 @@
 import { FlexColumn, ValidateSpaceInput } from "@/components";
-import {
-  uesValidateSpace,
-  useFetchDefectTypeList,
-  useResetLabeling,
-} from "@/hooks";
+import { uesValidateSpace } from "@/hooks";
 import { DefectType } from "@/interface";
 import { useBoundStore } from "@/store";
 import { BM, H5 } from "@/theme";
 import { Modal, Row } from "antd";
 import React, { useEffect, useState } from "react";
 import { ConfirmModal } from "./components";
-// import { useEngineDB } from '@engine-app/engine-db';
-import { UpdateCollectionRevisionLabelParam } from "@engine-app/types";
 import useConfirmModal from "./hook";
-import { CoreUtil } from "@/utils";
+import { customPresetColors, defectTypeColors } from "@/theme/color";
 
 interface Props {
   isOpen: boolean;
@@ -28,18 +22,8 @@ const EditModal: React.FC<Props> = ({
   onOk,
   onClose,
 }) => {
-  const resetLabeling = useResetLabeling();
-  const fetchDefectTypeList = useFetchDefectTypeList();
-  const setCurrentImage = useBoundStore((state) => state.setCurrentImage);
-  const setSelectedDefectType = useBoundStore(
-    (state) => state.setSelectedDefectType
-  );
-  const setDefaultDefectType = useBoundStore(
-    (state) => state.setDefaultDefectType
-  );
-  const currentImage = useBoundStore((state) => state.currentImage);
   const defectTypeList = useBoundStore((state) => state.defectTypeList);
-  // const selectedRevisionId = useBoundStore((state) => state.selectedRevisionId);
+  const setDefectTypeList = useBoundStore((state) => state.setDefectTypeList);
   const {
     isConfirmModalOpen,
     handleOpenConfirmModal,
@@ -47,8 +31,6 @@ const EditModal: React.FC<Props> = ({
   } = useConfirmModal();
   const { inputValue, isValidate, handleInputChange, resetState } =
     uesValidateSpace();
-  // const { engineDBApi } = useEngineDB();
-
   const [isDuplicate, setIsDuplicate] = useState(false);
   const validInput = isValidate && !isDuplicate;
   const modalType = isConfirmModalOpen ? "confirm" : "edit";
@@ -77,38 +59,24 @@ const EditModal: React.FC<Props> = ({
     selectedDefectType: DefectType | null,
     changeDefectType: string
   ) => {
-    // if (!selectedDefectType || !engineDBApi || !selectedRevisionId) {
-    //   return;
-    // }
+    const findDefectTypeIndex = defectTypeList.findIndex(
+      (defectType) => defectType.name === selectedDefectType?.name
+    );
 
-    // const params: UpdateCollectionRevisionLabelParam = {
-    //   collectionRevisionId: selectedRevisionId,
-    //   targetLabel: selectedDefectType.name,
-    //   newLabel: changeDefectType,
-    // };
-
-    try {
-      // await engineDBApi.updateCollectionRevisionLabel(params);
-      // await fetchDefectTypeList();
-
-      // resetLabeling();
-      // setDefaultDefectType(null);
-      // setSelectedDefectType(null);
-
-      // const resetImage = await engineDBApi.getImageWithLabelData({
-      //   collectionRevisionId: selectedRevisionId,
-      //   imageId: currentImage.imageId,
-      // });
-
-      // setCurrentImage({
-      //   ...resetImage,
-      //   path: CoreUtil.wrapFileScheme(resetImage.path),
-      // });
-      handleCloseConfirmModal();
-      onOk();
-    } catch (error) {
-      console.log(error);
+    if (findDefectTypeIndex === -1) {
+      return;
     }
+
+    setDefectTypeList(
+      [...defectTypeList].splice(findDefectTypeIndex, 1, {
+        name: changeDefectType,
+        color: defectTypeColors[customPresetColors[findDefectTypeIndex]],
+        defectTypeNumber: findDefectTypeIndex + 1,
+      })
+    );
+
+    handleCloseConfirmModal();
+    onOk();
   };
 
   return ((modalType: "confirm" | "edit") => {

@@ -17,9 +17,10 @@ const initialState: LabelingSettingState = {
   selectedDefectType: null,
   enableReticle: false,
   currentImage: {
-    imageId: 0,
-    filename: "123.jpg",
+    imageId: 1,
+    filename: "cat_1.jpg",
     path: "images/cat_1.jpg",
+    isLabelConfirmed: false,
     data: null,
   },
   defectTypeList: [

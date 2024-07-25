@@ -1,14 +1,12 @@
+import React from "react";
+import useConfirmModal from "./hook";
 import { DefectType } from "@/interface";
 import { BM, BL, H5 } from "@/theme";
 import { Modal, Row } from "antd";
-import React from "react";
-import useConfirmModal from "./hook";
 import { ConfirmModal } from "./components";
-// import { useEngineDB } from '@engine-app/engine-db';
-// import { DeleteCollectionRevisionLabelParam } from "@engine-app/types";
 import { useBoundStore } from "@/store";
-import { useFetchDefectTypeList, useResetLabeling } from "@/hooks";
-import { CoreUtil } from "@/utils";
+import { useResetLabeling } from "@/hooks";
+import { customPresetColors, defectTypeColors } from "@/theme/color";
 
 interface Props {
   isOpen: boolean;
@@ -24,16 +22,14 @@ const DeleteModal: React.FC<Props> = ({
   onClose,
 }) => {
   const resetLabeling = useResetLabeling();
-  const fetchDefectTypeList = useFetchDefectTypeList();
-  const setCurrentImage = useBoundStore((state) => state.setCurrentImage);
+  const defectTypeList = useBoundStore((state) => state.defectTypeList);
+  const setDefectTypeList = useBoundStore((state) => state.setDefectTypeList);
   const setSelectedDefectType = useBoundStore(
     (state) => state.setSelectedDefectType
   );
   const setDefaultDefectType = useBoundStore(
     (state) => state.setDefaultDefectType
   );
-  const currentImage = useBoundStore((state) => state.currentImage);
-  // const { engineDBApi } = useEngineDB();
 
   const {
     isConfirmModalOpen,
@@ -45,29 +41,22 @@ const DeleteModal: React.FC<Props> = ({
   const handleOkConfirmModal = async (
     selectedDefectType: DefectType | null
   ) => {
-    try {
-      // await engineDBApi.deleteCollectionRevisionLabel(params);
-      await fetchDefectTypeList();
+    const deletedDefectTypeList = defectTypeList
+      .filter((defectType) => defectType.name !== selectedDefectType?.name)
+      .map((defectType, index) => {
+        return {
+          name: defectType.name,
+          color: defectTypeColors[customPresetColors[index]],
+          defectTypeNumber: index + 1,
+        };
+      });
 
-      resetLabeling();
-      setDefaultDefectType(null);
-      setSelectedDefectType(null);
-
-      // const resetImage = await engineDBApi.getImageWithLabelData({
-      //   collectionRevisionId: selectedRevisionId,
-      //   imageId: currentImage.imageId,
-      // });
-
-      // setCurrentImage({
-      //   ...resetImage,
-      //   path: CoreUtil.wrapFileScheme(resetImage.path),
-      // });
-
-      handleCloseConfirmModal();
-      onOk();
-    } catch (error) {
-      console.log(error);
-    }
+    setDefectTypeList(deletedDefectTypeList);
+    resetLabeling();
+    setDefaultDefectType(null);
+    setSelectedDefectType(null);
+    handleCloseConfirmModal();
+    onOk();
   };
 
   return ((modalType: "confirm" | "delete") => {

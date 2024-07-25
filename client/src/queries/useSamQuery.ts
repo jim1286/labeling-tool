@@ -1,10 +1,14 @@
-import { PostLoadNpyResponse, PostLoadOnnxResponse } from "@/http";
+import {
+  PostLoadNpyRequest,
+  PostLoadNpyResponse,
+  PostLoadOnnxResponse,
+} from "@/http";
 import { SamService } from "@/services";
 import { useMutation } from "@tanstack/react-query";
 
-export const usePostLoadNpyMutation = (imagePath?: string) => {
-  return useMutation<PostLoadNpyResponse, Error>({
-    mutationFn: () => SamService.postLoadNpy({ imagePath: imagePath! }),
+export const usePostLoadNpyMutation = () => {
+  return useMutation<PostLoadNpyResponse, Error, PostLoadNpyRequest>({
+    mutationFn: SamService.postLoadNpy,
     onSuccess: (data) => {
       console.log(data);
     },

@@ -7,5 +7,5 @@ export class PostLoadNpyResponse {
 }
 
 export class PostRunSamResponse {
-  data: Uint8ClampedArray | undefined;
+  data: number[];
 }
