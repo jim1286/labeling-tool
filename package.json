@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "concurrently \"yarn install:client\" \"yarn install:server\" \"yarn start:client\" \"yarn start:server\"",
+    "start": "yarn install:client && yarn install:server && yarn start:dev",
+    "start:dev": "concurrently \"yarn start:client\" \"yarn start:server\"",
     "install:client": "cd client && yarn",
     "install:server": "cd server && yarn",
     "start:client": "cd client && yarn dev",
