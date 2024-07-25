@@ -1,35 +1,16 @@
 {
   "name": "labeling-tool",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "version": "1.0.0",
+  "license": "MIT",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "lodash": "^4.17.21",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "react-router-dom": "^6.25.1",
-    "styled-components": "^6.1.12"
+    "start": "yarn && yarn install:client && yarn install:server && yarn start:dev",
+    "start:dev": "concurrently \"yarn start:client\" \"yarn start:server\"",
+    "install:client": "cd client && yarn",
+    "install:server": "cd server && yarn",
+    "start:client": "cd client && yarn dev",
+    "start:server": "cd server && yarn dev"
   },
   "devDependencies": {
-    "@tabler/icons-react": "^3.1.0",
-    "@types/lodash": "^4.17.7",
-    "@types/node": "20.12.12",
-    "@types/react": "18.3.1",
-    "@types/react-dom": "18.3.0",
-    "@vitejs/plugin-react": "4.3.0",
-    "antd": "^5.17.4",
-    "eslint": "8.57.0",
-    "konva": "^9.3.6",
-    "react-konva": "^18.2.10",
-    "typescript": "5.4.5",
-    "vite": "5.2.11",
-    "vite-plugin-checker": "^0.7.0",
-    "zustand": "^4.5.2"
+    "concurrently": "^8.2.2"
   }
 }
