@@ -1,10 +1,13 @@
 {
   "name": "labeling-tool",
   "version": "1.0.0",
+  "license": "MIT",
   "scripts": {
-    "start": "concurrently \"npm run start:nest\" \"npm run start:vite\"",
-    "start:nest": "cd client && yarn dev",
-    "start:vite": "cd server && yarn dev"
+    "start": "concurrently \"yarn install:client\" \"yarn install:server\" \"yarn start:client\" \"yarn start:server\"",
+    "install:client": "cd client && yarn",
+    "install:server": "cd server && yarn",
+    "start:client": "cd client && yarn dev",
+    "start:server": "cd server && yarn dev"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
