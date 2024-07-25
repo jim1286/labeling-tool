@@ -8,22 +8,43 @@ import {
 } from "./styles";
 import { BS, LM } from "@/theme";
 import { NumberUtil } from "@/utils";
-import { useKeyDown } from "@/hooks";
+import { useKeyDown, useResetLabeling, useSubmitLabeling } from "@/hooks";
 import { useBoundStore } from "@/store";
-import { collectionImageList } from "@/const";
+import { Spin } from "antd";
+import { LabelingModeEnum } from "@/enums";
+import { IconCircle, IconCircleCheckFilled } from "@tabler/icons-react";
+import { useTheme } from "styled-components";
 
 const Collection: React.FC = () => {
+  const theme = useTheme();
+  const autoSave = useBoundStore((state) => state.autoSave);
   const currentImage = useBoundStore((state) => state.currentImage);
+  const labelingMode = useBoundStore((state) => state.labelingMode);
+  const selectedDefectType = useBoundStore((state) => state.selectedDefectType);
+  const collectionImageList = useBoundStore(
+    (state) => state.collectionImageList
+  );
+  const resetLabeling = useResetLabeling();
   const setCurrentImage = useBoundStore((state) => state.setCurrentImage);
+  const { isLoading, contextHolder, handleSubmit } = useSubmitLabeling();
+  const disableSubmit =
+    labelingMode === LabelingModeEnum.CLASSIFICATION && !selectedDefectType;
 
-  const handleClickCollectionImage = (imageId: number) => {
+  const handleClickCollectionImage = async (imageId: number) => {
     const findImage = collectionImageList.find(
       (image) => image.imageId === imageId
     );
 
-    if (findImage) {
-      setCurrentImage({ ...findImage, data: null });
+    if (!findImage) {
+      return;
     }
+
+    if (autoSave && !disableSubmit) {
+      await handleSubmit();
+    }
+
+    resetLabeling();
+    setCurrentImage({ ...findImage });
   };
 
   useKeyDown(async () => {
@@ -68,6 +89,7 @@ const Collection: React.FC = () => {
 
   return (
     <Container>
+      {contextHolder}
       <CollectionHeader>
         <LM>컬렉션</LM>
         <LM>{NumberUtil.numberWithCommas(collectionImageList.length)}</LM>
@@ -83,10 +105,16 @@ const Collection: React.FC = () => {
               }}
             >
               <BS style={{ width: "80%" }}>{collectionImage.filename}</BS>
+              {collectionImage.isLabelConfirmed ? (
+                <IconCircleCheckFilled color={theme.icon.success} />
+              ) : (
+                <IconCircle color={theme.icon.tertiary} />
+              )}
             </CollectionItem>
           ))}
         </CollectionBody>
       </CollectionContainer>
+      {isLoading && <Spin fullscreen />}
     </Container>
   );
 };

@@ -24,6 +24,9 @@ export const useDefectType = (api: NotificationInstance) => {
   const selectedTaskLayerId = useBoundStore(
     (state) => state.selectedTaskLayerId
   );
+  const keyDownList = defectTypeList.map(
+    (defectType) => "Digit" + defectType.defectTypeNumber
+  );
 
   const handleClick = (defectType: DefectType) => {
     handleDefectType(defectType);
@@ -101,7 +104,7 @@ export const useDefectType = (api: NotificationInstance) => {
       const number = Number(e.key);
       handleDefectType(defectTypeList[number - 1]);
     },
-    defectTypeList.map((defectType) => "Digit" + defectType.defectTypeNumber)
+    [...keyDownList]
   );
 
   return {
@@ -137,14 +140,13 @@ export const useDefectAddModal = (api: NotificationInstance) => {
   };
 
   const handleAddModalOk = async (inputValue: string) => {
-    setDefectTypeList([
-      ...defectTypeList,
-      {
-        name: inputValue,
-        color: defectTypeColors[customPresetColors[defectTypeList.length - 1]],
-        defectTypeNumber: defectTypeList.length,
-      },
-    ]);
+    const newDefectType = {
+      name: inputValue,
+      color: defectTypeColors[customPresetColors[defectTypeList.length]],
+      defectTypeNumber: defectTypeList.length + 1,
+    };
+
+    setDefectTypeList([...defectTypeList, newDefectType]);
   };
 
   return {

@@ -1,15 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, LabelingMode } from "./styles";
 import { FlexColumn, FlexRow } from "@/components";
 import { useTheme } from "styled-components";
 import { H1 } from "@/theme";
 import { LabelingModeEnum } from "@/enums";
 import { TypeContainer } from "./components";
+import { usePostUnInitSamMutation } from "@/queries";
+import { useBoundStore } from "@/store";
+import { useResetLabeling } from "@/hooks";
+import { useLocation } from "react-router-dom";
 
 interface Props {}
 
 const HomePage: React.FC<Props> = () => {
   const theme = useTheme();
+  const location = useLocation();
+  const { mutate: unInitSamMutate } = usePostUnInitSamMutation();
+  const resetLabeling = useResetLabeling();
+  const resetLabelingSettingState = useBoundStore(
+    (state) => state.resetLabelingSettingState
+  );
+
+  useEffect(() => {
+    const resetState = () => {
+      unInitSamMutate();
+      resetLabeling();
+      resetLabelingSettingState();
+    };
+
+    if (location.pathname === "/home") {
+      resetState();
+    }
+  }, [location.pathname]);
 
   return (
     <Container>

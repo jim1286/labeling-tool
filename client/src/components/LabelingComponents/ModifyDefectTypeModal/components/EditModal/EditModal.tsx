@@ -1,5 +1,5 @@
 import { FlexColumn, ValidateSpaceInput } from "@/components";
-import { uesValidateSpace, useResetLabeling } from "@/hooks";
+import { uesValidateSpace } from "@/hooks";
 import { DefectType } from "@/interface";
 import { useBoundStore } from "@/store";
 import { BM, H5 } from "@/theme";
@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react";
 import { ConfirmModal } from "./components";
 import useConfirmModal from "./hook";
 import { customPresetColors, defectTypeColors } from "@/theme/color";
+import useModifyState from "../hook";
 
 interface Props {
   isOpen: boolean;
@@ -22,9 +23,6 @@ const EditModal: React.FC<Props> = ({
   onOk,
   onClose,
 }) => {
-  const defectTypeList = useBoundStore((state) => state.defectTypeList);
-  const setDefectTypeList = useBoundStore((state) => state.setDefectTypeList);
-  const resetLabeling = useResetLabeling();
   const {
     isConfirmModalOpen,
     handleOpenConfirmModal,
@@ -32,6 +30,8 @@ const EditModal: React.FC<Props> = ({
   } = useConfirmModal();
   const { inputValue, isValidate, handleInputChange, resetState } =
     uesValidateSpace();
+  const modifyState = useModifyState();
+  const defectTypeList = useBoundStore((state) => state.defectTypeList);
   const [isDuplicate, setIsDuplicate] = useState(false);
   const validInput = isValidate && !isDuplicate;
   const modalType = isConfirmModalOpen ? "confirm" : "edit";
@@ -77,9 +77,8 @@ const EditModal: React.FC<Props> = ({
     const changedDefectTypeList = [...defectTypeList];
     changedDefectTypeList.splice(findDefectTypeIndex, 1, newDefectType);
 
-    setDefectTypeList(changedDefectTypeList);
+    modifyState(changedDefectTypeList);
     handleCloseConfirmModal();
-    resetLabeling();
     onOk();
   };
 

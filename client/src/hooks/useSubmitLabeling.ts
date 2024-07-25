@@ -9,8 +9,8 @@ import {
   useSleep,
   useSamEditData,
   useSubmitKeyPoint,
+  useResetLabeling,
 } from "@/hooks";
-import { collectionImageList } from "@/const";
 
 const useSubmitLabeling = () => {
   const convertKeyPointData = useSubmitKeyPoint();
@@ -18,8 +18,12 @@ const useSubmitLabeling = () => {
   const setDisableKeyInLabeling = useBoundStore(
     (state) => state.setDisableKeyInLabeling
   );
+  const setCollectionImageList = useBoundStore(
+    (state) => state.setCollectionImageList
+  );
   const setCurrentImage = useBoundStore((state) => state.setCurrentImage);
   const getSamEditData = useSamEditData();
+  const resetLabeling = useResetLabeling();
   const drawMode = useBoundStore((state) => state.drawMode);
   const editDataList = useBoundStore((state) => state.editDataList);
   const taskLayerList = useBoundStore((state) => state.taskLayerList);
@@ -29,6 +33,9 @@ const useSubmitLabeling = () => {
   const selectedDefectType = useBoundStore((state) => state.selectedDefectType);
   const selectedTaskLayerId = useBoundStore(
     (state) => state.selectedTaskLayerId
+  );
+  const collectionImageList = useBoundStore(
+    (state) => state.collectionImageList
   );
   const [api, contextHolder] = notification.useNotification();
   const [isLoading, setIsLoading] = useState(false);
@@ -79,8 +86,7 @@ const useSubmitLabeling = () => {
           }),
         };
 
-        await saveLabeling(odLabelData);
-        break;
+        return await saveLabeling(odLabelData);
       }
       case LabelingModeEnum.SEGMENTATION: {
         const savedTaskLayerList = cloneDeep(taskLayerList);
@@ -127,8 +133,7 @@ const useSubmitLabeling = () => {
             }),
         };
 
-        await saveLabeling(segmentLabelData);
-        break;
+        return await saveLabeling(segmentLabelData);
       }
       case LabelingModeEnum.KEY_POINT: {
         const savedTaskLayerList = cloneDeep(taskLayerList);
@@ -159,22 +164,29 @@ const useSubmitLabeling = () => {
             }),
         };
 
-        await saveLabeling(keyPointLabelData);
-        break;
+        return await saveLabeling(keyPointLabelData);
       }
     }
   };
 
   const saveLabeling = async (labelData: LabelData) => {
     try {
-      const param = {
-        imageId: currentImage.imageId,
-        data: labelData,
-      };
+      const findImageIndex = collectionImageList.findIndex(
+        (image) => image.imageId === currentImage.imageId
+      );
+
+      if (findImageIndex === -1) {
+        return;
+      }
+
+      const saveCollectionImageList = cloneDeep(collectionImageList);
+      saveCollectionImageList[findImageIndex].data = labelData;
+      saveCollectionImageList[findImageIndex].isLabelConfirmed = true;
+      setCollectionImageList(saveCollectionImageList);
 
       api.open({
         type: "success",
-        message: `${currentImage.filename} 저장 완료`,
+        message: `${currentImage.filename} 저장 성공`,
         placement: "bottomRight",
       });
     } catch (error) {
@@ -190,7 +202,7 @@ const useSubmitLabeling = () => {
     }
   };
 
-  const fetchCollectionState = async () => {
+  const fetchCollectionState = () => {
     const findImageIndex = collectionImageList.findIndex(
       (image) => image.imageId === currentImage.imageId
     );
@@ -199,12 +211,14 @@ const useSubmitLabeling = () => {
       return;
     }
 
+    resetLabeling();
+
     if (collectionImageList.length - 1 === findImageIndex) {
-      setCurrentImage({ ...collectionImageList[0], data: null });
+      setCurrentImage({ ...collectionImageList[0] });
       return;
     }
 
-    setCurrentImage({ ...collectionImageList[findImageIndex], data: null });
+    setCurrentImage({ ...collectionImageList[findImageIndex + 1] });
   };
 
   return { isLoading, contextHolder, handleSubmit, fetchCollectionState };

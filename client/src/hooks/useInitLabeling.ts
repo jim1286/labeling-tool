@@ -21,9 +21,10 @@ import { DecodeUtil, EncodeUtil, ImageUtil, LabelingUtil } from "@/utils";
 import { useEffect, useState } from "react";
 import useSleep from "./useSleep";
 import useSetNewTaskLayer from "./useSetNewTaskLayer";
-import { usePostLoadNpyMutation, usePostLoadOnnxMutation } from "@/queries";
+import { usePostInitSamMutation } from "@/queries";
 
 const useInitLabeling = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const setSamMode = useBoundStore((state) => state.setSamMode);
   const setDrawMode = useBoundStore((state) => state.setDrawMode);
   const setTaskLayerList = useBoundStore((state) => state.setTaskLayerList);
@@ -36,11 +37,8 @@ const useInitLabeling = () => {
   const labelingMode = useBoundStore((state) => state.labelingMode);
   const defectTypeList = useBoundStore((state) => state.defectTypeList);
   const defaultDefectType = useBoundStore((state) => state.defaultDefectType);
-  const [isLoading, setIsLoading] = useState(false);
-  const { mutateAsync: loadNpyMutateAsync, isPending: loadNpyIsPending } =
-    usePostLoadNpyMutation();
-  const { mutateAsync: loadOnnxMutateAsync, isPending: loadOnnxIsPending } =
-    usePostLoadOnnxMutation();
+  const { mutateAsync: initSamMutateAsync, isPending: initSamIsPending } =
+    usePostInitSamMutation();
 
   useEffect(() => {
     if (!currentImage.path) {
@@ -69,7 +67,7 @@ const useInitLabeling = () => {
     await initImageSize(currentImage);
 
     if (labelingMode === LabelingModeEnum.SEGMENTATION) {
-      await initSam(currentImage.filename);
+      await initSamMutateAsync({ fileName: currentImage.filename });
     }
 
     if (defaultDefectType && !labelData) {
@@ -90,11 +88,6 @@ const useInitLabeling = () => {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const initSam = async (fileName: string) => {
-    await loadNpyMutateAsync({ fileName });
-    await loadOnnxMutateAsync();
   };
 
   const initDrawMode = async (defaultDefectType: DefectType) => {
@@ -275,7 +268,7 @@ const useInitLabeling = () => {
   };
 
   return {
-    isLoading: isLoading || loadNpyIsPending || loadOnnxIsPending,
+    isLoading: isLoading || initSamIsPending,
     initLabeling,
     getClsDefectType,
     getOdTaskLayer,

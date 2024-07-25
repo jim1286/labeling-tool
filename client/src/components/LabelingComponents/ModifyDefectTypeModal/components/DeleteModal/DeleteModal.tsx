@@ -5,8 +5,8 @@ import { BM, BL, H5 } from "@/theme";
 import { Modal, Row } from "antd";
 import { ConfirmModal } from "./components";
 import { useBoundStore } from "@/store";
-import { useResetLabeling } from "@/hooks";
 import { customPresetColors, defectTypeColors } from "@/theme/color";
+import useModifyState from "../hook";
 
 interface Props {
   isOpen: boolean;
@@ -21,21 +21,13 @@ const DeleteModal: React.FC<Props> = ({
   onOk,
   onClose,
 }) => {
-  const resetLabeling = useResetLabeling();
-  const defectTypeList = useBoundStore((state) => state.defectTypeList);
-  const setDefectTypeList = useBoundStore((state) => state.setDefectTypeList);
-  const setSelectedDefectType = useBoundStore(
-    (state) => state.setSelectedDefectType
-  );
-  const setDefaultDefectType = useBoundStore(
-    (state) => state.setDefaultDefectType
-  );
-
   const {
     isConfirmModalOpen,
     handleOpenConfirmModal,
     handleCloseConfirmModal,
   } = useConfirmModal();
+  const modifyState = useModifyState();
+  const defectTypeList = useBoundStore((state) => state.defectTypeList);
   const modalType = isConfirmModalOpen ? "confirm" : "delete";
 
   const handleOkConfirmModal = async (
@@ -51,10 +43,7 @@ const DeleteModal: React.FC<Props> = ({
         };
       });
 
-    setDefectTypeList(deletedDefectTypeList);
-    resetLabeling();
-    setDefaultDefectType(null);
-    setSelectedDefectType(null);
+    modifyState(deletedDefectTypeList);
     handleCloseConfirmModal();
     onOk();
   };

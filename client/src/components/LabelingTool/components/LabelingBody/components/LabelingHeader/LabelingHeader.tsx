@@ -24,8 +24,8 @@ const LabelingHeader: React.FC = () => {
     labelingMode === LabelingModeEnum.CLASSIFICATION && !selectedDefectType;
 
   const handleSave = async () => {
-    await handleSubmit();
-    await fetchCollectionState();
+    const labelData = await handleSubmit();
+    fetchCollectionState(labelData);
   };
 
   useKeyDown(

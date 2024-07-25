@@ -1,8 +1,8 @@
-export interface PostLoadNpyResponse {
+export interface PostInitSamResponse {
   message: string;
 }
 
-export interface PostLoadOnnxResponse {
+export interface PostUnInitSamResponse {
   message: string;
 }
 

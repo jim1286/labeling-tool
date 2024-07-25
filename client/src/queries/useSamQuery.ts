@@ -1,14 +1,14 @@
 import {
-  PostLoadNpyRequest,
-  PostLoadNpyResponse,
-  PostLoadOnnxResponse,
+  PostInitSamRequest,
+  PostInitSamResponse,
+  PostUnInitSamResponse,
 } from "@/http";
 import { SamService } from "@/services";
 import { useMutation } from "@tanstack/react-query";
 
-export const usePostLoadNpyMutation = () => {
-  return useMutation<PostLoadNpyResponse, Error, PostLoadNpyRequest>({
-    mutationFn: SamService.postLoadNpy,
+export const usePostInitSamMutation = () => {
+  return useMutation<PostInitSamResponse, Error, PostInitSamRequest>({
+    mutationFn: SamService.postInitSam,
     onSuccess: (data) => {
       console.log(data);
     },
@@ -18,9 +18,9 @@ export const usePostLoadNpyMutation = () => {
   });
 };
 
-export const usePostLoadOnnxMutation = () => {
-  return useMutation<PostLoadOnnxResponse, Error>({
-    mutationFn: () => SamService.postLoadOnnx(),
+export const usePostUnInitSamMutation = () => {
+  return useMutation<PostUnInitSamResponse, Error>({
+    mutationFn: () => SamService.postUnInitSam(),
     onSuccess: (data) => {
       console.log(data);
     },

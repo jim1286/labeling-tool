@@ -3,6 +3,7 @@ import { CurrentImage, DefectType, ImageColorFilter } from "@/interface";
 
 export type LabelingSettingState = {
   currentImage: CurrentImage;
+  collectionImageList: CurrentImage[];
   labelingMode: LabelingModeEnum;
   lineWidth: number;
   brushSize: number;
@@ -16,6 +17,7 @@ export type LabelingSettingState = {
 
 export type LabelingSettingAction = {
   setCurrentImage: (currentImage: CurrentImage) => void;
+  setCollectionImageList: (collectionImageList: CurrentImage[]) => void;
   setLabelingMode: (labelingMode: LabelingModeEnum) => void;
   setLineWidth: (lineWidth: number) => void;
   setBrushSize: (brushSize: number) => void;
