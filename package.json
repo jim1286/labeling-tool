@@ -1,0 +1,12 @@
+{
+  "name": "labeling-tool",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "concurrently \"npm run start:nest\" \"npm run start:vite\"",
+    "start:nest": "cd client && yarn dev",
+    "start:vite": "cd server && yarn dev"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

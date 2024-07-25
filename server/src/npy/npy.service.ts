@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { execFile } from 'node:child_process';
 import { join } from 'path';
 import { promises as fsPromises } from 'fs';
 import {
@@ -7,12 +6,9 @@ import {
   PostLoadNpyResponse,
   PostRunSamResponse,
 } from './npy.response';
-import { promisify } from 'util';
 import * as onnx from 'onnxruntime-node';
 import { dynamicImport } from 'tsimportlib';
 import { PostRunSamRequest } from './npy.request';
-
-const execFilePromise = promisify(execFile);
 
 @Injectable()
 export class NpyService {
@@ -36,16 +32,15 @@ export class NpyService {
   }
 
   async loadNpy(): Promise<PostLoadNpyResponse> {
-    const imagePath = '/Users/jimin/Desktop/cat_dog/cat/1.jpg'; // 이미지 파일 경로
-
-    const npyPath = join(__dirname, '../../python/temp.npy');
-    const scriptPath = join(__dirname, '../../python', 'image_to_npy.py');
+    const imagePath = 'cat_1.jpg'; // 이미지 파일 경로
+    const npyPath = join(
+      __dirname,
+      '../../python/',
+      imagePath.replace('.jpg', '.npy'),
+    );
 
     try {
-      await execFilePromise('python', [scriptPath, imagePath, npyPath]);
       const npyBuffer = await fsPromises.readFile(npyPath);
-      await fsPromises.rm(npyPath);
-
       this.tensor = await this.getTensor(npyBuffer);
 
       return { message: 'npy loaded' };

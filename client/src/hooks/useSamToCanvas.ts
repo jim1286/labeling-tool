@@ -1,15 +1,21 @@
-import { EditData, ImageSize, SamBoxData, SamData, SamPointData } from '@/interface';
-import { SamModeEnum, SamPointTypeEnum } from '@/enums';
-import { useDrawDataToCanvas } from '.';
-import { useBoundStore } from '@/store';
-import { Coordinates } from '@engine-app/types';
+import {
+  Coordinates,
+  EditData,
+  ImageSize,
+  SamBoxData,
+  SamData,
+  SamPointData,
+} from "@/interface";
+import { SamModeEnum, SamPointTypeEnum } from "@/enums";
+import { useDrawDataToCanvas } from ".";
+import { useBoundStore } from "@/store";
 
 const useSamToCanvas = () => {
   const initialScale = useBoundStore((state) => state.initialScale);
   const { drawSamToCanvas } = useDrawDataToCanvas();
 
   const samToCanvas = async (
-    mode: 'original' | 'click' | 'hover',
+    mode: "original" | "click" | "hover",
     ctx: CanvasRenderingContext2D,
     color: string,
     imageSize: ImageSize,
@@ -17,16 +23,22 @@ const useSamToCanvas = () => {
     editDataList: EditData[]
   ) => {
     const pointDataList = editDataList.filter(
-      (editData): editData is EditData & { data: SamData & { data: SamPointData } } =>
+      (
+        editData
+      ): editData is EditData & { data: SamData & { data: SamPointData } } =>
         (editData.data as SamData).samMode === SamModeEnum.POINT
     );
-    const samPointList = pointDataList.map((editData) => editData.data.data.samPoint);
+    const samPointList = pointDataList.map(
+      (editData) => editData.data.data.samPoint
+    );
     const samPointTypeList = pointDataList.map(
       (editData) => editData.data.data.samPointType
     );
 
     const findBox = editDataList.find(
-      (editData): editData is EditData & { data: SamData & { data: SamBoxData } } =>
+      (
+        editData
+      ): editData is EditData & { data: SamData & { data: SamBoxData } } =>
         (editData.data as SamData).samMode === SamModeEnum.BOX
     );
     const samBoxData = findBox ? findBox.data.data : undefined;
@@ -35,7 +47,7 @@ const useSamToCanvas = () => {
       : [];
 
     switch (mode) {
-      case 'original': {
+      case "original": {
         await drawSamToCanvas(
           ctx,
           color,
@@ -47,7 +59,7 @@ const useSamToCanvas = () => {
         );
         break;
       }
-      case 'click': {
+      case "click": {
         let resizeValue;
 
         if (initialScale > 2) {
@@ -75,7 +87,7 @@ const useSamToCanvas = () => {
 
         break;
       }
-      case 'hover': {
+      case "hover": {
         let resizeValue;
 
         if (initialScale > 2) {
@@ -136,12 +148,8 @@ const useSamToCanvas = () => {
     samPointTypeList: SamPointTypeEnum[],
     samBoxPoints: number[][]
   ) => {
-    const { resizedSamPointList, resizedSamBoxPoints, resizedImageSize } = resize(
-      resizeValue,
-      samPointList,
-      samBoxPoints,
-      imageSize
-    );
+    const { resizedSamPointList, resizedSamBoxPoints, resizedImageSize } =
+      resize(resizeValue, samPointList, samBoxPoints, imageSize);
 
     await drawSamToCanvas(
       ctx,

@@ -19,7 +19,7 @@ const initialState: LabelingSettingState = {
   currentImage: {
     imageId: 0,
     filename: "123.jpg",
-    path: "images/1.jpg",
+    path: "images/cat_1.jpg",
     data: null,
   },
   defectTypeList: [

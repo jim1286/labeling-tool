@@ -24,4 +24,3 @@ export { default as useCurrentImageIsSamLoading } from "./useCurrentImageIsSamLo
 export { default as useKeyDown } from "./useKeyDown";
 export { default as useKeyUp } from "./useKeyUp";
 export { default as useInitViewer } from "./useInitViewer";
-export { default as useSam } from "./useSam";
