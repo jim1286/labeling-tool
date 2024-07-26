@@ -31,13 +31,6 @@ export type SegLabelData = number;
 export type BoxLabelData = Coordinates[];
 export type KeyPointLabelData = Coordinates[];
 
-export type CollectionImage = {
-  imageId: number;
-  filename: string;
-  path: string;
-  isLabelConfirmed: boolean;
-};
-
 export interface ImageSize {
   width: number;
   height: number;

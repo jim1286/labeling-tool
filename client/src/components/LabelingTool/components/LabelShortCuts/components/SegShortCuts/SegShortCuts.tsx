@@ -42,14 +42,6 @@ const SegShortCuts: React.FC = () => {
             <TextIcon>F</TextIcon>
           </FlexRow>
         </FlexRow>
-        <FlexRow width="100%" justifyContent="space-between">
-          <BM>스마트 라벨링 생성</BM>
-          <FlexRow gap={4}>
-            <TextIcon>Ctrl</TextIcon>
-            <BM>+</BM>
-            <TextIcon>Tab</TextIcon>
-          </FlexRow>
-        </FlexRow>
       </FlexColumn>
       <FlexColumn width="100%" gap={9}>
         <BL>이미지</BL>
@@ -168,21 +160,6 @@ const SegShortCuts: React.FC = () => {
             <BM>+</BM>
             <TextIcon>Z</TextIcon>
           </FlexRow>
-        </FlexRow>
-      </FlexColumn>
-      <FlexColumn width="100%" gap={9}>
-        <BL>분류</BL>
-        <FlexRow width="100%" justifyContent="space-between">
-          <BM>기본</BM>
-          <TextIcon>Z</TextIcon>
-        </FlexRow>
-        <FlexRow width="100%" justifyContent="space-between">
-          <BM>학습</BM>
-          <TextIcon>X</TextIcon>
-        </FlexRow>
-        <FlexRow width="100%" justifyContent="space-between">
-          <BM>검증</BM>
-          <TextIcon>C</TextIcon>
         </FlexRow>
       </FlexColumn>
     </FlexColumn>

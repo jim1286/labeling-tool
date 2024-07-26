@@ -9,9 +9,11 @@ const useModifyState = () => {
   const setDefaultDefectType = useBoundStore(
     (state) => state.setDefaultDefectType
   );
+  const resetModeState = useBoundStore((state) => state.resetModeState);
   const resetLayerState = useBoundStore((state) => state.resetLayerState);
 
   const modifyState = (modifiedDefectTypeList: DefectType[]) => {
+    resetModeState();
     resetLayerState();
     setDefectTypeList(modifiedDefectTypeList);
     setDefaultDefectType(null);
