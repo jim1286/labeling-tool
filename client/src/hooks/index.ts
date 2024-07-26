@@ -20,4 +20,3 @@ export { default as useCanvasAction } from "./useCanvasAction";
 export { default as useSubmitLabeling } from "./useSubmitLabeling";
 export { default as useKeyDown } from "./useKeyDown";
 export { default as useKeyUp } from "./useKeyUp";
-export { default as useInitViewer } from "./useInitViewer";
