@@ -196,7 +196,7 @@ const useInitLabeling = () => {
 
   const getSegTaskLayer = (labelData: LabelData) => {
     const decodedMaskData: number[] = Array(
-      labelData.imageHeight * labelData.imageHeight
+      labelData.imageHeight * labelData.imageWidth
     ).fill(0);
 
     DecodeUtil.decodeMaskData(decodedMaskData, JSON.parse(labelData.mask));
