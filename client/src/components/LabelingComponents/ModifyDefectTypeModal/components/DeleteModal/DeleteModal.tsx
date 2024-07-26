@@ -5,7 +5,7 @@ import { BM, BL, H5 } from "@/theme";
 import { Modal, Row } from "antd";
 import { ConfirmModal } from "./components";
 import { useBoundStore } from "@/store";
-import { customPresetColors, defectTypeColors } from "@/theme/color";
+import { defectTypeColors } from "@/theme/color";
 import useModifyState from "../hook";
 
 interface Props {
@@ -38,7 +38,7 @@ const DeleteModal: React.FC<Props> = ({
       .map((defectType, index) => {
         return {
           name: defectType.name,
-          color: defectTypeColors[customPresetColors[index]],
+          color: defectTypeColors[index],
           defectTypeNumber: index + 1,
         };
       });

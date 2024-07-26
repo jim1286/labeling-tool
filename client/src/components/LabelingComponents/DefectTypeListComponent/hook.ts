@@ -5,7 +5,7 @@ import { useBoundStore } from "@/store";
 import { NotificationInstance } from "antd/es/notification/interface";
 import { useState } from "react";
 import { cloneDeep } from "lodash";
-import { customPresetColors, defectTypeColors } from "@/theme/color";
+import { defectTypeColors } from "@/theme/color";
 
 export const useDefectType = (api: NotificationInstance) => {
   const setNewTaskLayer = useSetNewTaskLayer();
@@ -142,7 +142,7 @@ export const useDefectAddModal = (api: NotificationInstance) => {
   const handleAddModalOk = async (inputValue: string) => {
     const newDefectType = {
       name: inputValue,
-      color: defectTypeColors[customPresetColors[defectTypeList.length]],
+      color: defectTypeColors[defectTypeList.length],
       defectTypeNumber: defectTypeList.length + 1,
     };
 

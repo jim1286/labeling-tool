@@ -7,7 +7,7 @@ import { Modal, Row } from "antd";
 import React, { useEffect, useState } from "react";
 import { ConfirmModal } from "./components";
 import useConfirmModal from "./hook";
-import { customPresetColors, defectTypeColors } from "@/theme/color";
+import { defectTypeColors } from "@/theme/color";
 import useModifyState from "../hook";
 
 interface Props {
@@ -70,7 +70,7 @@ const EditModal: React.FC<Props> = ({
 
     const newDefectType = {
       name: changeDefectType,
-      color: defectTypeColors[customPresetColors[findDefectTypeIndex]],
+      color: defectTypeColors[findDefectTypeIndex],
       defectTypeNumber: findDefectTypeIndex + 1,
     };
 

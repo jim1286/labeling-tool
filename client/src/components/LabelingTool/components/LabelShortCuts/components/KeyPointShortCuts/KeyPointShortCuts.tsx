@@ -1,7 +1,7 @@
-import { FlexColumn, FlexRow } from '@/components';
-import React from 'react';
-import { TextIcon } from './styles';
-import { BL, BM, H5 } from '@/theme';
+import { FlexColumn, FlexRow } from "@/components";
+import React from "react";
+import { TextIcon } from "./styles";
+import { BL, BM, H5 } from "@/theme";
 
 const KeyPointShortCuts: React.FC = () => {
   return (
@@ -9,7 +9,7 @@ const KeyPointShortCuts: React.FC = () => {
       width="100%"
       height="85vh"
       gap={25}
-      style={{ overflowY: 'auto', paddingRight: '20px' }}
+      style={{ overflowY: "auto", paddingRight: "20px" }}
     >
       <H5>단축키</H5>
       <FlexColumn width="100%" gap={9}>
@@ -110,21 +110,6 @@ const KeyPointShortCuts: React.FC = () => {
             <BM>+</BM>
             <TextIcon>Z</TextIcon>
           </FlexRow>
-        </FlexRow>
-      </FlexColumn>
-      <FlexColumn width="100%" gap={9}>
-        <BL>분류</BL>
-        <FlexRow width="100%" justifyContent="space-between">
-          <BM>기본</BM>
-          <TextIcon>Z</TextIcon>
-        </FlexRow>
-        <FlexRow width="100%" justifyContent="space-between">
-          <BM>학습</BM>
-          <TextIcon>X</TextIcon>
-        </FlexRow>
-        <FlexRow width="100%" justifyContent="space-between">
-          <BM>검증</BM>
-          <TextIcon>C</TextIcon>
         </FlexRow>
       </FlexColumn>
     </FlexColumn>
