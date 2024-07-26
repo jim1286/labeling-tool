@@ -25,11 +25,9 @@ const TypeContainer: React.FC<Props> = ({
   const navigate = useNavigate();
   const setLabelingMode = useBoundStore((state) => state.setLabelingMode);
 
-  const handleClickMode = async (labelingMode: LabelingModeEnum) => {
-    try {
-      setLabelingMode(labelingMode);
-      navigate("/labeling");
-    } catch (error) {}
+  const handleClickMode = (labelingMode: LabelingModeEnum) => {
+    setLabelingMode(labelingMode);
+    navigate("/labeling");
   };
 
   return (

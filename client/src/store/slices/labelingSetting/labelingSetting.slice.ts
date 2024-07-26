@@ -6,7 +6,7 @@ import {
 } from "./labelingSetting.types";
 import { BoundStore } from "../boundStoreType";
 import { LabelingModeEnum } from "@/enums";
-import { customPresetColors, defectTypeColors } from "@/theme/color";
+import { defectTypeColors } from "@/theme/color";
 import { SessionStorageUtil } from "@/utils";
 
 const catList = [...Array(10).keys()].map((index) => {
@@ -47,12 +47,12 @@ const initialState: LabelingSettingState = {
   defectTypeList: [
     {
       name: "cat",
-      color: defectTypeColors[customPresetColors[0]],
+      color: defectTypeColors[0],
       defectTypeNumber: 1,
     },
     {
       name: "dog",
-      color: defectTypeColors[customPresetColors[1]],
+      color: defectTypeColors[1],
       defectTypeNumber: 2,
     },
   ],
