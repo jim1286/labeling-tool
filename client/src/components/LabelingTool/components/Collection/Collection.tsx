@@ -92,7 +92,15 @@ const Collection: React.FC = () => {
       {contextHolder}
       <CollectionHeader>
         <LM>컬렉션</LM>
-        <LM>{NumberUtil.numberWithCommas(collectionImageList.length)}</LM>
+        <LM>
+          {NumberUtil.numberWithCommas(
+            collectionImageList.filter(
+              (collectionImage) => collectionImage.isLabelConfirmed
+            ).length
+          ) +
+            "/" +
+            NumberUtil.numberWithCommas(collectionImageList.length)}
+        </LM>
       </CollectionHeader>
       <CollectionContainer>
         <CollectionBody>
