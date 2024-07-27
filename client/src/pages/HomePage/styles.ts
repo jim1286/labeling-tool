@@ -1,4 +1,3 @@
-import { BM, H3 } from "@/theme";
 import styled from "styled-components";
 
 export const Container = styled.div`
@@ -13,8 +12,8 @@ export const Container = styled.div`
 `;
 
 export const LabelingMode = styled.div`
-  width: 50vw;
-  height: 50vh;
+  width: 80vw;
+  height: 80vh;
   border: ${({ theme }) => `5px solid ${theme.border.primary}`};
   border-radius: 10px;
 `;
