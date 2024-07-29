@@ -22,24 +22,6 @@ export class NpyService {
     return { message: 'init sam' };
   }
 
-  async loadOnnx() {
-    const onnxPath = join(__dirname, '../../python/sam_b_decoder.onnx');
-    const onnxBuffer = await fsPromises.readFile(onnxPath);
-
-    this.inferenceSession = await this.loadModelBuffer(onnxBuffer);
-  }
-
-  async loadNpy(fileName: string) {
-    const npyPath = join(
-      __dirname,
-      '../../python/',
-      fileName.replace('.jpg', '.npy'),
-    );
-
-    const npyBuffer = await fsPromises.readFile(npyPath);
-    this.tensor = await this.loadNpyBuffer(npyBuffer);
-  }
-
   async unInitSam() {
     this.tensor = undefined;
     this.inferenceSession = undefined;
@@ -137,6 +119,24 @@ export class NpyService {
       data: Object.keys(best_mask).map((key) => best_mask[key]),
     };
   }
+
+  loadOnnx = async () => {
+    const onnxPath = join(__dirname, '../../python/sam_b_decoder.onnx');
+    const onnxBuffer = await fsPromises.readFile(onnxPath);
+
+    this.inferenceSession = await this.loadModelBuffer(onnxBuffer);
+  };
+
+  loadNpy = async (fileName: string) => {
+    const npyPath = join(
+      __dirname,
+      '../../python/',
+      fileName.replace('.jpg', '.npy'),
+    );
+
+    const npyBuffer = await fsPromises.readFile(npyPath);
+    this.tensor = await this.loadNpyBuffer(npyBuffer);
+  };
 
   arrayToUint8ClampedArray = (
     input: number[],
