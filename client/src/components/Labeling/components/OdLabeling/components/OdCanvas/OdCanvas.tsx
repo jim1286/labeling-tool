@@ -19,7 +19,6 @@ const OdCanvas: React.FC = () => {
   const originImageSize = useBoundStore((state) => state.originImageSize);
   const imageColorFilter = useBoundStore((state) => state.imageColorFilter);
   const currentImage = useBoundStore((state) => state.currentImage);
-  const getCanvasStyle = useCanvasStyle();
   const {
     scale,
     isDragging,
@@ -38,14 +37,12 @@ const OdCanvas: React.FC = () => {
     handleContainerMouseMove,
   } = useCanvasAction(canvasRef);
   const cursorStyle = useCursorStyle(isDragging);
-  const canvasStyle = getCanvasStyle(canvasRef, imageSize);
+  const canvasStyle = useCanvasStyle(canvasRef, imageSize);
 
   useResizeImage({
     type: "labelingTool",
     canvasRef: canvasRef,
     originImageSize: originImageSize,
-    scale: undefined,
-    initialScale: undefined,
   });
 
   return (
