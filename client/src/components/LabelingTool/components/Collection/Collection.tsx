@@ -35,7 +35,7 @@ const Collection: React.FC = () => {
       (image) => image.imageId === imageId
     );
 
-    if (!findImage) {
+    if (!findImage || imageId === currentImage.imageId) {
       return;
     }
 
