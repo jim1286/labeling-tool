@@ -1,6 +1,6 @@
-import { TaskLayer, DefectType, ResizeImageInfo } from '@/interface';
-import { defectTypeColors } from '@/theme/color';
-import { nanoid } from 'nanoid';
+import { TaskLayer, DefectType, ResizeImageInfo } from "@/interface";
+import { defectTypeColors } from "@/theme/color";
+import { nanoid } from "nanoid";
 
 export const convertMaskDataToImageData = (
   maskData: number[],
@@ -62,20 +62,22 @@ export const getResizeInfo = (
   canvasWidth: number,
   canvasHeight: number
 ): ResizeImageInfo => {
-  const imageRatio = imageWidth / imageHeight;
-  const canvasRatio = canvasWidth / canvasHeight;
+  const imageRatio = imageWidth / imageHeight; // 이미지의 가로세로 비율
+  const canvasRatio = canvasWidth / canvasHeight; // 캔버스의 가로세로 비율
   let reWidth = 0;
   let reHeight = 0;
   let scale = 0;
 
   if (imageRatio > canvasRatio) {
-    reWidth = canvasWidth;
-    reHeight = reWidth / imageRatio;
-    scale = reHeight / imageHeight;
+    // 이미지가 더 넓은 형태
+    reWidth = canvasWidth; // 너비를 캔버스 너비에 맞춤
+    reHeight = reWidth / imageRatio; // 높이를 비율에 맞게 조정
+    scale = reHeight / imageHeight; // 높이를 기준으로 크기 비율 계산
   } else {
-    reHeight = canvasHeight;
-    reWidth = reHeight * imageRatio;
-    scale = reWidth / imageWidth;
+    // 이미지가 더 높은 형태
+    reHeight = canvasHeight; // 높이를 캔버스 높이에 맞춤
+    reWidth = reHeight * imageRatio; // 너비를 비율에 맞게 조정
+    scale = reWidth / imageWidth; // 너비를 기준으로 크기 비율 계산
   }
 
   return {
@@ -102,8 +104,8 @@ export const getNewTaskLayer = (defectType: DefectType): TaskLayer => {
 };
 
 export const putImageDataToCanvas = (imageData: ImageData) => {
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
 
   canvas.width = imageData.width;
   canvas.height = imageData.height;
@@ -123,7 +125,7 @@ export const putDrawCanvasToCanvas = (
   canvas.width = drawCanvas.width;
   canvas.height = drawCanvas.height;
 
-  const ctx = canvas.getContext('2d', {
+  const ctx = canvas.getContext("2d", {
     willReadFrequently: true,
   });
 

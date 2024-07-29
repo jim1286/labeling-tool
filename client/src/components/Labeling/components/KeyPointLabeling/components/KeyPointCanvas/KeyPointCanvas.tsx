@@ -20,7 +20,6 @@ import { CursorCoordinates, Reticle } from "@/components";
 
 const KeyPointCanvas: React.FC = () => {
   const currentImage = useBoundStore((state) => state.currentImage);
-  const initialScale = useBoundStore((state) => state.initialScale);
   const imageSize = useBoundStore((state) => state.imageSize);
   const originImageSize = useBoundStore((state) => state.originImageSize);
   const imageColorFilter = useBoundStore((state) => state.imageColorFilter);
@@ -42,16 +41,13 @@ const KeyPointCanvas: React.FC = () => {
     handleCanvasMouseMove,
     handleContainerMouseMove,
   } = useCanvasAction(canvasRef);
-  const getCanvasStyle = useCanvasStyle();
   const cursorStyle = useCursorStyle(isDragging);
-  const canvasStyle = getCanvasStyle(canvasRef, imageSize);
+  const canvasStyle = useCanvasStyle(canvasRef, imageSize);
 
   useResizeImage({
     type: "labelingTool",
     canvasRef: canvasRef,
     originImageSize: originImageSize,
-    scale: scale,
-    initialScale: initialScale,
   });
   useMouseMode();
 

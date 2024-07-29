@@ -1,39 +1,34 @@
-import { ImageSize } from '@/interface';
+import { ImageSize } from "@/interface";
+import { useEffect, useState } from "react";
 
-const useCanvasStyle = () => {
-  const getCanvasStyle = (
-    divRef: React.RefObject<HTMLDivElement>,
-    imageSize: ImageSize,
-    bordered?: string
-  ) => {
-    return (() => {
-      if (imageSize.width === 0 || imageSize.height === 0 || !divRef.current) {
-        return undefined;
-      }
+const useCanvasStyle = (
+  divRef: React.RefObject<HTMLDivElement>,
+  imageSize: ImageSize,
+  bordered?: string
+) => {
+  const [canvasStyle, setCanvasStyle] = useState<React.CSSProperties>({});
 
-      let canvasWidth = divRef.current.offsetWidth;
-      let canvasHeight = divRef.current.offsetHeight;
+  useEffect(() => {
+    if (imageSize.width === 0 || imageSize.height === 0 || !divRef.current) {
+      return undefined;
+    }
 
-      if (bordered) {
-        canvasWidth -= 8;
-        canvasHeight -= 8;
-      }
+    let canvasWidth = divRef.current.offsetWidth;
+    let canvasHeight = divRef.current.offsetHeight;
 
-      if (canvasWidth < imageSize.width && canvasHeight < imageSize.height) {
-        return undefined;
-      }
+    if (bordered) {
+      canvasWidth -= 8;
+      canvasHeight -= 8;
+    }
 
-      const imageRatio = imageSize.width / imageSize.height;
-      const canvasRatio = canvasWidth / canvasHeight;
+    if (imageSize.width === canvasWidth) {
+      setCanvasStyle({ alignItems: "center" });
+      return;
+    }
+    setCanvasStyle({ justifyContent: "center" });
+  }, [imageSize, bordered]);
 
-      if (imageRatio > canvasRatio) {
-        return { alignItems: 'center' };
-      }
-      return { justifyContent: 'center' };
-    })();
-  };
-
-  return getCanvasStyle;
+  return canvasStyle;
 };
 
 export default useCanvasStyle;

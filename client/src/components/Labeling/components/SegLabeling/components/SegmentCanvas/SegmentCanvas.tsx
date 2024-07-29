@@ -29,7 +29,6 @@ const SegmentCanvas: React.FC = () => {
   const mouseMode = useBoundStore((state) => state.mouseMode);
   const brushSize = useBoundStore((state) => state.brushSize);
   const selectedDefectType = useBoundStore((state) => state.selectedDefectType);
-  const initialScale = useBoundStore((state) => state.initialScale);
   const imageSize = useBoundStore((state) => state.imageSize);
   const currentImage = useBoundStore((state) => state.currentImage);
   const originImageSize = useBoundStore((state) => state.originImageSize);
@@ -51,9 +50,8 @@ const SegmentCanvas: React.FC = () => {
     handleCanvasMouseMove,
     handleContainerMouseMove,
   } = useCanvasAction(canvasRef);
-  const getCanvasStyle = useCanvasStyle();
   const cursorStyle = useCursorStyle(isDragging);
-  const canvasStyle = getCanvasStyle(canvasRef, imageSize);
+  const canvasStyle = useCanvasStyle(canvasRef, imageSize);
   const isBrushMode =
     !!selectedDefectType &&
     drawMode === DrawModeEnum.BRUSH &&
@@ -63,8 +61,6 @@ const SegmentCanvas: React.FC = () => {
     type: "labelingTool",
     canvasRef: canvasRef,
     originImageSize: originImageSize,
-    scale: scale,
-    initialScale: initialScale,
   });
   useMouseMode();
 
