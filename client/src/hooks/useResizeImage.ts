@@ -1,20 +1,18 @@
-import { ImageSize, ResizeImageInfo } from '@/interface';
-import { useBoundStore } from '@/store';
-import { LabelingUtil } from '@/utils';
-import { useEffect, useLayoutEffect, useState } from 'react';
-import { debounce } from 'lodash';
+import { ImageSize, ResizeImageInfo } from "@/interface";
+import { useBoundStore } from "@/store";
+import { LabelingUtil } from "@/utils";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { debounce } from "lodash";
 
 interface Props {
-  type: 'labelingTool' | 'viewer';
+  type: "labelingTool" | "viewer";
   canvasRef: React.RefObject<HTMLDivElement>;
   originImageSize: ImageSize;
-  scale?: number;
-  initialScale?: number;
   bordered?: string;
 }
 
 const useResizeImage = (props: Props) => {
-  const { type, canvasRef, originImageSize, scale, initialScale, bordered } = props;
+  const { type, canvasRef, originImageSize, bordered } = props;
   const setImageSize = useBoundStore((state) => state.setImageSize);
   const setInitialScale = useBoundStore((state) => state.setInitialScale);
   const [resizeInfo, setResizeInfo] = useState<ResizeImageInfo>({
@@ -57,25 +55,23 @@ const useResizeImage = (props: Props) => {
     };
 
     switch (type) {
-      case 'viewer': {
+      case "viewer": {
         setResizeInfo(resizeInfo);
         break;
       }
-      case 'labelingTool': {
-        if (!initialScale || scale === initialScale) {
-          setImageSize(imageResize);
-          setInitialScale(resizeInfo.scale);
-        }
+      case "labelingTool": {
+        setImageSize(imageResize);
+        setInitialScale(resizeInfo.scale);
         break;
       }
     }
   }, 10);
 
   useEffect(() => {
-    window.addEventListener('resize', debounceOnChange);
+    window.addEventListener("resize", debounceOnChange);
 
     return () => {
-      window.removeEventListener('resize', debounceOnChange);
+      window.removeEventListener("resize", debounceOnChange);
     };
   }, [debounceOnChange]);
 

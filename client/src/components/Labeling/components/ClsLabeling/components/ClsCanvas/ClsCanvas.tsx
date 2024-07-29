@@ -17,8 +17,6 @@ const ClsCanvas: React.FC = () => {
   const originImageSize = useBoundStore((state) => state.originImageSize);
   const imageColorFilter = useBoundStore((state) => state.imageColorFilter);
   const selectedDefectType = useBoundStore((state) => state.selectedDefectType);
-  const getCanvasStyle = useCanvasStyle();
-
   const bordered = (() => {
     if (!currentImage) {
       return undefined;
@@ -30,14 +28,12 @@ const ClsCanvas: React.FC = () => {
 
     return selectedDefectType.color;
   })();
-  const canvasStyle = getCanvasStyle(canvasRef, imageSize, bordered);
+  const canvasStyle = useCanvasStyle(canvasRef, imageSize, bordered);
 
   useResizeImage({
     type: "labelingTool",
     canvasRef: canvasRef,
     originImageSize: originImageSize,
-    scale: undefined,
-    initialScale: undefined,
     bordered: bordered,
   });
 
